@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Sample usage: start execute|compile [-ix] <source file path>
+
+javac -classpath classes -d classes -sourcepath src src/*.java
+
+java -classpath classes Pascal "$@"
