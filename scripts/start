@@ -4,4 +4,4 @@
 
 javac -classpath classes -d classes -sourcepath src src/*.java
 
-java -classpath classes Pascal "$@"
+java -classpath classes "$@"

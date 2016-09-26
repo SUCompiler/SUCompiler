@@ -36,6 +36,7 @@ public class FrontendFactory
             type.equalsIgnoreCase("top-down"))
         {
         	Scanner scanner;
+        	System.out.println(language);
         	switch (language) {
 	        	case "Pascal":
 	        		scanner = new PascalScanner(source);
@@ -43,6 +44,9 @@ public class FrontendFactory
 	        	case "C":
 	        		scanner = new CScanner(source);
 	                return new CParserTD(scanner);
+	            default:
+	            	throw new Exception("Parser factory: Invalid language '" +
+                            language + "'");
         	}
         }
         else if (!isLanguageSupported) {
