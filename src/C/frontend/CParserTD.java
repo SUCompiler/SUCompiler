@@ -2,7 +2,10 @@ package C.frontend;
 
 import wci.frontend.*;
 import wci.message.Message;
-
+import C.frontend.*;
+import C.frontend.token.*;
+import C.frontend.token.CErrorCode.*;
+import C.frontend.token.cTokenType.*;
 import static wci.message.MessageType.PARSER_SUMMARY;
 
 public class CParserTD extends Parser
@@ -25,15 +28,40 @@ public class CParserTD extends Parser
     {
         Token token;
         long startTime = System.currentTimeMillis();
+        try {
 
-        while (!((token = nextToken()) instanceof EofToken)) {}
+            // Loop over each token until the end of file.
+            while (!((token = nextToken()) instanceof EofToken)) {
+                TokenType tokenType = token.getType();
+                
+                if (tokenType != ERROR) {
 
-        // Send the parser summary message.
-        float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
-        sendMessage(new Message(PARSER_SUMMARY,
-                                new Number[] {token.getLineNumber(),
-                                              getErrorCount(),
-                                              elapsedTime}));
+                    // Format each token.
+                    sendMessage(new Message(TOKEN,
+                                            new Object[] {token.getLineNumber(),
+                                                          token.getPosition(),
+                                                          tokenType,
+                                                          token.getText(),
+                                                          token.getValue()}));
+                }
+                else {
+                    errorHandler.flag(token, (PascalErrorCode) token.getValue(),
+                                      this);
+                }
+
+            }
+
+            // Send the parser summary message.
+            float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
+            sendMessage(new Message(PARSER_SUMMARY,
+                                    new Number[] {token.getLineNumber(),
+                                                  getErrorCount(),
+                                                  elapsedTime}));
+        }
+        catch (java.io.IOException ex) {
+        	System.out.println("error");
+            errorHandler.abortTranslation(IO_ERROR, this);
+        }
     }
 
     /**

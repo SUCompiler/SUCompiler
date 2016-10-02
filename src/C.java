@@ -43,8 +43,9 @@ public class C
 
             backend = BackendFactory.createBackend(operation);
             backend.addMessageListener(new BackendMessageListener());
-
+            System.out.println(parser);
             parser.parse();
+            System.out.println("parse");
             source.close();
 			
             iCode = parser.getICode();

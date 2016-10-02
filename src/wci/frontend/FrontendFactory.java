@@ -42,6 +42,7 @@ public class FrontendFactory
 	        		scanner = new PascalScanner(source);
 	                return new PascalParserTD(scanner);
 	        	case "C":
+	        		System.out.println("hi");
 	        		scanner = new CScanner(source);
 	                return new CParserTD(scanner);
 	            default:
