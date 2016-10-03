@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Sample usage: start execute|compile [-ix] <source file path>
+rm -rf classes/*
 
 javac -classpath classes -d classes -sourcepath src src/*.java
 

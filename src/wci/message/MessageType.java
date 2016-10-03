@@ -16,3 +16,4 @@ public enum MessageType
     ASSIGN, FETCH, BREAKPOINT, RUNTIME_ERROR,
     CALL, RETURN,
 }
+

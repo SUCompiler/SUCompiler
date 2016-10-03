@@ -3,10 +3,15 @@ package C.frontend;
 import wci.frontend.*;
 import wci.message.Message;
 
-import static wci.message.MessageType.PARSER_SUMMARY;
+import static C.frontend.CTokenType.*;
+import static C.frontend.CErrorCode.*;
+import static wci.message.MessageType.*;
+
 
 public class CParserTD extends Parser
 {
+	protected static CErrorHandler errorHandler = new CErrorHandler();
+	
     /**
      * Constructor.
      * @param scanner the scanner to be used with this parser.
@@ -26,14 +31,39 @@ public class CParserTD extends Parser
         Token token;
         long startTime = System.currentTimeMillis();
 
-        while (!((token = nextToken()) instanceof EofToken)) {}
+        try {
 
-        // Send the parser summary message.
-        float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
-        sendMessage(new Message(PARSER_SUMMARY,
-                                new Number[] {token.getLineNumber(),
-                                              getErrorCount(),
-                                              elapsedTime}));
+            // Loop over each token until the end of file.
+            while (!((token = nextToken()) instanceof EofToken)) {
+                TokenType tokenType = token.getType();
+                if (tokenType != ERROR) {
+
+                    // Format each token.
+                    sendMessage(new Message(TOKEN,
+                                            new Object[] {token.getLineNumber(),
+                                                          token.getPosition(),
+                                                          tokenType,
+                                                          token.getText(),
+                                                          token.getValue()}));
+                }
+                else {
+                    errorHandler.flag(token, (CErrorCode) token.getValue(),
+                                      this);
+                }
+
+            }
+
+            // Send the parser summary message.
+            float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
+            sendMessage(new Message(PARSER_SUMMARY,
+                                    new Number[] {token.getLineNumber(),
+                                                  getErrorCount(),
+                                                  elapsedTime}));
+        }
+        catch (java.io.IOException ex) {
+        	System.out.println("error");
+            errorHandler.abortTranslation(IO_ERROR, this);
+        }
     }
 
     /**
