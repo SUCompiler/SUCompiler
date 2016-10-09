@@ -1,33 +1,33 @@
-package C.frontend.tokens;
+package wci.frontend.pascal.tokens;
 
 import wci.frontend.*;
-import C.frontend.*;
+import wci.frontend.pascal.*;
 
-import static C.frontend.CTokenType.*;
+import static wci.frontend.pascal.PascalTokenType.*;
 
 /**
- * <h1>CWordToken</h1>
+ * <h1>PascalWordToken</h1>
  *
- * <p> C word tokens (identifiers and reserved words).</p>
+ * <p> Pascal word tokens (identifiers and reserved words).</p>
  *
  * <p>Copyright (c) 2009 by Ronald Mak</p>
  * <p>For instructional purposes only.  No warranties.</p>
  */
-public class CWordToken extends CToken
+public class PascalWordToken extends PascalToken
 {
     /**
      * Constructor.
      * @param source the source from where to fetch the token's characters.
      * @throws Exception if an error occurred.
      */
-    public CWordToken(Source source)
+    public PascalWordToken(Source source)
         throws Exception
     {
         super(source);
     }
 
     /**
-     * Extract a C word token from the source.
+     * Extract a Pascal word token from the source.
      * @throws Exception if an error occurred.
      */
     protected void extract()
@@ -42,12 +42,12 @@ public class CWordToken extends CToken
             textBuffer.append(currentChar);
             currentChar = nextChar();  // consume character
         }
-//        System.out.println(textBuffer);
+
         text = textBuffer.toString();
 
         // Is it a reserved word or an identifier?
         type = (RESERVED_WORDS.contains(text.toLowerCase()))
-               ? CTokenType.valueOf(text.toUpperCase())  // reserved word
+               ? PascalTokenType.valueOf(text.toUpperCase())  // reserved word
                : IDENTIFIER;                                  // identifier
     }
 }

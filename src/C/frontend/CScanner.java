@@ -42,7 +42,7 @@ public class CScanner extends Scanner
         else if (Character.isDigit(currentChar)) {
             token = new CNumberToken(source);
         }
-        else if (currentChar == '\'') {
+        else if (currentChar == '\"') {
             token = new CStringToken(source);
         }
         else if (CTokenType.SPECIAL_SYMBOLS

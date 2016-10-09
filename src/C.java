@@ -5,6 +5,7 @@ import wci.frontend.*;
 import wci.intermediate.*;
 import wci.backend.*;
 import wci.message.*;
+import wci.util.*;
 
 import static wci.message.MessageType.*;
 import static C.frontend.CTokenType.STRING;
@@ -21,7 +22,7 @@ public class C
     private Parser parser;    // language-independent parser
     private Source source;    // language-independent scanner
     private ICode iCode;      // generated intermediate code
-    private SymTab symTab;    // generated symbol table
+    private SymTabStack symTabStack;    // generated symbol table
     private Backend backend;  // backend
 
     /**
@@ -49,9 +50,14 @@ public class C
             source.close();
 			
             iCode = parser.getICode();
-            symTab = parser.getSymTab();
+            symTabStack = parser.getSymTabStack();
 
-            backend.process(iCode, symTab);
+            if (xref) {
+                CrossReferencer crossReferencer = new CrossReferencer();
+                crossReferencer.print(symTabStack);
+            }
+
+            backend.process(iCode, symTabStack);
         }
         catch (Exception ex) {
             System.out.println("***** Internal translator error. *****");

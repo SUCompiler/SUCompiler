@@ -1,36 +1,36 @@
-package C.frontend.tokens;
+package wci.frontend.pascal.tokens;
 
 import wci.frontend.*;
-import C.frontend.*;
+import wci.frontend.pascal.*;
 
 import static wci.frontend.Source.EOL;
 import static wci.frontend.Source.EOF;
-import static C.frontend.CTokenType.*;
-import static C.frontend.CErrorCode.*;
+import static wci.frontend.pascal.PascalTokenType.*;
+import static wci.frontend.pascal.PascalErrorCode.*;
 
 /**
- * <h1>CStringToken</h1>
+ * <h1>PascalStringToken</h1>
  *
- * <p> C string tokens.</p>
+ * <p> Pascal string tokens.</p>
  *
  * <p>Copyright (c) 2009 by Ronald Mak</p>
  * <p>For instructional purposes only.  No warranties.</p>
  */
-public class CStringToken extends CToken
+public class PascalStringToken extends PascalToken
 {
     /**
      * Constructor.
      * @param source the source from where to fetch the token's characters.
      * @throws Exception if an error occurred.
      */
-    public CStringToken(Source source)
+    public PascalStringToken(Source source)
         throws Exception
     {
         super(source);
     }
 
     /**
-     * Extract a C string token from the source.
+     * Extract a Pascal string token from the source.
      * @throws Exception if an error occurred.
      */
     protected void extract()
@@ -40,7 +40,7 @@ public class CStringToken extends CToken
         StringBuilder valueBuffer = new StringBuilder();
 
         char currentChar = nextChar();  // consume initial quote
-        textBuffer.append('\"');
+        textBuffer.append('\'');
 
         // Get string characters.
         do {
@@ -49,26 +49,26 @@ public class CStringToken extends CToken
                 currentChar = ' ';
             }
 
-            if ((currentChar != '\"') && (currentChar != EOF)) {
+            if ((currentChar != '\'') && (currentChar != EOF)) {
                 textBuffer.append(currentChar);
                 valueBuffer.append(currentChar);
                 currentChar = nextChar();  // consume character
             }
 
             // Quote?  Each pair of adjacent quotes represents a single-quote.
-            if (currentChar == '\"') {
-                while ((currentChar == '\"') && (peekChar() == '\"')) {
+            if (currentChar == '\'') {
+                while ((currentChar == '\'') && (peekChar() == '\'')) {
                     textBuffer.append("''");
                     valueBuffer.append(currentChar); // append single-quote
                     currentChar = nextChar();        // consume pair of quotes
                     currentChar = nextChar();
                 }
             }
-        } while ((currentChar != '\"') && (currentChar != EOF));
+        } while ((currentChar != '\'') && (currentChar != EOF));
 
-        if (currentChar == '\"') {
+        if (currentChar == '\'') {
             nextChar();  // consume final quote
-            textBuffer.append('\"');
+            textBuffer.append('\'');
 
             type = STRING;
             value = valueBuffer.toString();

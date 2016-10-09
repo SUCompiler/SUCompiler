@@ -5,7 +5,8 @@ import C.frontend.*;
 
 import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
-
+import java.lang.String;
+import java.util.Arrays;
 /**
  * <h1>CSpecialSymbolToken</h1>
  *
@@ -27,6 +28,15 @@ public class CSpecialSymbolToken extends CToken
         super(source);
     }
 
+    protected int comsumeCharSymbol(String symbol, String[] symbols) {
+    	for (int i = 0; i < symbols.length; i++) {
+			if (symbol.equals(symbols[i])) {
+				return i;
+			}
+		}
+    	return -1;
+    }
+    
     /**
      * Extract a C special symbol token from the source.
      * @throws Exception if an error occurred.
@@ -38,114 +48,140 @@ public class CSpecialSymbolToken extends CToken
 
         text = Character.toString(currentChar);
         type = null;
-
-        switch (currentChar) {
-
-            // Single-character special symbols.
-            case '+':  case '-':  	 case ',':	case '\"':
-            case ';':  case '\'':  	case '(':  	case ')':
-            case '{':  case '}': 	case '#': 	case '.':  {
-                nextChar();  // consume character
-                break;
-            }
-            
-            case '*': {
-                currentChar = nextChar();  // consume '|';
-
-                if (currentChar == '/') {
-                    text += currentChar;
-                    nextChar();  // consume second '|'
-                } else {
-                    type = ERROR;
-                    value = INVALID_CHARACTER;
-                }
-
-                break;
-            }
-            
-            case '/': {
-                currentChar = nextChar();  // consume '|';
-
-                if (currentChar == '*') {
-                    text += currentChar;
-                    nextChar();  // consume second '|'
-                } else {
-                    type = ERROR;
-                    value = INVALID_CHARACTER;
-                }
-
-                break;
-            }
-
-            case '|': {
-                currentChar = nextChar();  // consume '|';
-
-                if (currentChar == '|') {
-                    text += currentChar;
-                    nextChar();  // consume second '|'
-                } else {
-                    type = ERROR;
-                    value = INVALID_CHARACTER;
-                }
-
-                break;
-            }
-
-            // !=
-            case '!': {
-                currentChar = nextChar();  // consume '!';
-
-                if (currentChar == '=') {
-                    text += currentChar;
-                    nextChar();  // consume second '='
-                }
-
-                break;
-            }
-
-            // = or ==
-            case '=': {
-                currentChar = nextChar();  // consume first '=';
-
-                if (currentChar == '=') {
-                    text += currentChar;
-                    nextChar();  // consume second '='
-                }
-
-                break;
-            }
-
-            // < or <= 
-            case '<': {
-                currentChar = nextChar();  // consume '<';
-
-                if (currentChar == '=') {
-                    text += currentChar;
-                    nextChar();  // consume '='
-                }
-
-                break;
-            }
-
-            // > or >=
-            case '>': {
-                currentChar = nextChar();  // consume '>';
-
-                if (currentChar == '=') {
-                    text += currentChar;
-                    nextChar();  // consume '='
-                }
-
-                break;
-            }
-
-
-            default: {
-                nextChar();  // consume bad character
-                type = ERROR;
-                value = INVALID_CHARACTER;
-            }
+        
+        String[] oneCharSymbol = new String[] {
+        		"+", "-", ",", "\"", ";", "\'", "(", ")", 
+        		"{", "}", "#", ".", "<", ">", "="
+        };
+        String[] twoCharSymbol = new String[] {
+        		"+=", "-=", "==", "!=", "<=", ">=", "||", "&&"
+        };
+        
+        int index = -1;
+        index = comsumeCharSymbol(text, oneCharSymbol);
+        
+        if (peekChar() != ' ' || peekChar() != '\n') {
+        	String tmpWord = text + String.valueOf(peekChar());
+        	int tmpIndex = comsumeCharSymbol(tmpWord, twoCharSymbol);
+        	if (tmpIndex >= 0) {
+        		index = tmpIndex;
+        		text = tmpWord;
+        		nextChar();
+        	}
         }
+        nextChar();
+        if(index <= -1) {
+        	type = ERROR;
+        	value = INVALID_CHARACTER;
+        }
+        
+//        switch (currentChar) {
+//
+//            // Single-character special symbols.
+//            case '+':  case '-':  	 case ',':	case '\"':
+//            case ';':  case '\'':  	case '(':  	case ')':
+//            case '{':  case '}': 	case '#': 	case '.':  {
+//                nextChar();  // consume character
+//                break;
+//            }
+//            
+//            case '*': {
+//                currentChar = nextChar();  // consume '|';
+//
+//                if (currentChar == '/') {
+//                    text += currentChar;
+//                    nextChar();  // consume second '|'
+//                } else {
+//                    type = ERROR;
+//                    value = INVALID_CHARACTER;
+//                }
+//
+//                break;
+//            }
+//            
+//            case '/': {
+//                currentChar = nextChar();  // consume '|';
+//
+//                if (currentChar == '*') {
+//                    text += currentChar;
+//                    nextChar();  // consume second '|'
+//                } else {
+//                    type = ERROR;
+//                    value = INVALID_CHARACTER;
+//                }
+//
+//                break;
+//            }
+//
+//            case '|': {
+//                currentChar = nextChar();  // consume '|';
+//
+//                if (currentChar == '|') {
+//                    text += currentChar;
+//                    nextChar();  // consume second '|'
+//                } else {
+//                    type = ERROR;
+//                    value = INVALID_CHARACTER;
+//                }
+//
+//                break;
+//            }
+//
+//            // !=
+//            case '!': {
+//                currentChar = nextChar();  // consume '!';
+//
+//                if (currentChar == '=') {
+//                    text += currentChar;
+//                    nextChar();  // consume second '='
+//                }
+//
+//                break;
+//            }
+//
+//            // = or ==
+//            case '=': {
+//                currentChar = nextChar();  // consume first '=';
+//
+//                if (currentChar == '=') {
+//                    text += currentChar;
+//                    nextChar();  // consume second '='
+//                }
+//
+//                break;
+//            }
+//
+//            // < or <= 
+//            case '<': {
+//                currentChar = nextChar();  // consume '<';
+//
+//                if (currentChar == '=') {
+//                    text += currentChar;
+//                    nextChar();  // consume '='
+//                }
+//
+//                break;
+//            }
+//
+//            // > or >=
+//            case '>': {
+//                currentChar = nextChar();  // consume '>';
+//
+//                if (currentChar == '=') {
+//                    text += currentChar;
+//                    nextChar();  // consume '='
+//                }
+//
+//                break;
+//            }
+//
+//
+//            default: {
+//                nextChar();  // consume bad character
+//                type = ERROR;
+//                value = INVALID_CHARACTER;
+//            }
+//        }
 
         // Set the type if it wasn't an error.
         if (type == null) {
