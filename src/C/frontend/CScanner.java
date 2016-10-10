@@ -92,6 +92,32 @@ public class CScanner extends Scanner
                 currentChar = nextChar();  // consume whitespace character
             }
         }
+        
+        
+        
+        
+        COMMENT_START = '/';
+    	COMMENT_ENDs = '\n';
+    	
+        currentChar = currentChar();
+
+        while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START)) {
+        	
+            // Start of a comment?
+            if (currentChar == COMMENT_START) {
+            	currentChar = nextChar();
+            	if (currentChar == '/') {
+            		do {
+                        currentChar = nextChar();  // consume comment characters
+                    } while ((currentChar != COMMENT_ENDs) && (currentChar != EOF));
+            	}
+            }
+
+            // Not a comment.
+            else {
+                currentChar = nextChar();  // consume whitespace character
+            }
+        }
     }
 }
 

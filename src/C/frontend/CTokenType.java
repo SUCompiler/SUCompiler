@@ -24,7 +24,7 @@ public enum CTokenType implements TokenType
     DOT("."), SEMICOLON(";"), QUOTE("\""), ASSIGNMENT("="), SINGLE_OR("|"), SINGLE_AND("&"),
     EQUALS("=="), NOT_EQUALS("!="), LESS_THAN("<"), LESS_EQUALS("<="),
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
-    LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"),
+    LEFT_BRACE("{"), RIGHT_BRACE("}"), AND("&&"),
     COMMENTS_START("/*"), COMMENTS_END("*/"),
     MODULO("%"), LINE_COMM("//"),
     NUM_SIGN("#"),
