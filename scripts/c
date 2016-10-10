@@ -1,0 +1,4 @@
+// result=${PWD}
+// $result = $result + "/start C compile -ix"
+// echo $result
+// $result + '/start C compile -ix' $1 

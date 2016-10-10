@@ -16,19 +16,19 @@ import wci.frontend.TokenType;
 public enum CTokenType implements TokenType
 {
     // Reserved words.
-    ELSE, IF, TRUE, FALSE,
+    ELSE, IF, TRUE, FALSE, VOID, INT, BOOLEAN,
     WHILE,
 
     // Special symbols.
-    PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), NEGATE("!"),
-    DOT("."), SEMICOLON(";"), QUOTE("\""), ASSIGNMENT("="),
+    PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), NEGATE("!"), COMMA(","),
+    DOT("."), SEMICOLON(";"), QUOTE("\""), ASSIGNMENT("="), SINGLE_OR("|"), SINGLE_AND("&"),
     EQUALS("=="), NOT_EQUALS("!="), LESS_THAN("<"), LESS_EQUALS("<="),
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
-    LEFT_BRACE("{"), RIGHT_BRACE("}"),
+    LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"),
     COMMENTS_START("/*"), COMMENTS_END("*/"),
     NUM_SIGN("#"),MODULO("%"), BOOL_AND("&&"),OR("|"), BOOL_OR("||"),LINE_COMM("//"),
 
-    IDENTIFIER, INTEGER, BOOLEAN, REAL, STRING,
+    IDENTIFIER, INTEGER, REAL, STRING,
     ERROR, END_OF_FILE;
 
     private static final int FIRST_RESERVED_INDEX = ELSE.ordinal();
