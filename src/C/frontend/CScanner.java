@@ -96,10 +96,10 @@ public class CScanner extends Scanner
         
         
         
-        char COMMENT_START = '/';
-    	char COMMENT_ENDs = '\n';
+        COMMENT_START = '/';
+    	COMMENT_ENDs = '\n';
     	
-        char currentChar = currentChar();
+        currentChar = currentChar();
 
         while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START)) {
         	
