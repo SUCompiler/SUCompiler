@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-== <= >= != || &&
+/* == <= >= != || && */
 
 void newton (int input, int output) {
 	int integer;
