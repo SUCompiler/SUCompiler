@@ -26,7 +26,7 @@ public enum CTokenType implements TokenType
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
     LEFT_BRACE("{"), RIGHT_BRACE("}"),
     COMMENTS_START("/*"), COMMENTS_END("*/"),
-    NUM_SIGN("#"),
+    NUM_SIGN("#"),MODULO("%"), BOOL_AND("&&"),OR("|"), BOOL_OR("||"),LINE_COMM("//"),
 
     IDENTIFIER, INTEGER, BOOLEAN, REAL, STRING,
     ERROR, END_OF_FILE;
