@@ -7,15 +7,18 @@ Create a folder called "classes" in the "ChapterX" (`X` is the chapter number)  
 
 # Usage
 
-Sample usage: `start execute|compile [-ix] <source file path>`
+
+Sample usage: `scripts/start execute|compile [-ix] <source file path>`
 
 * `execute`: interpreter
 * `compile`: compiler
 * `-ix` flags. Enable view cross-reference table (`-x`) and the intermediate code (`-i`)
 * Other flags: -l, -a, -f, -c, and -r to specify printing the current source line number, an assignment, a data fetch, a routine call, and a routine return, respectively. 
 
-To compile and run the code, go to the the appropriate folder and type
+# Example
+To compile and run the code, go to the `SUCompiler` folder add run command:
+
 
 ```sh
-scripts/start execute Pascal.java
+scripts/start C execute -ix NEWTON.C
 ```

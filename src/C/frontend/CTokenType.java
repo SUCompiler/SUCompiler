@@ -16,7 +16,7 @@ import wci.frontend.TokenType;
 public enum CTokenType implements TokenType
 {
     // Reserved words.
-    ELSE, IF, TRUE, FALSE, VOID, INT, BOOLEAN,
+    ELSE, IF, TRUE, FALSE, VOID, INT, BOOLEAN, RETURN,
     WHILE,
 
     // Special symbols.
@@ -26,7 +26,8 @@ public enum CTokenType implements TokenType
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
     LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"),
     COMMENTS_START("/*"), COMMENTS_END("*/"),
-    NUM_SIGN("#"),MODULO("%"), BOOL_AND("&&"),OR("|"), BOOL_OR("||"),LINE_COMM("//"),
+    MODULO("%"), LINE_COMM("//"),
+    NUM_SIGN("#"),
 
     IDENTIFIER, INTEGER, REAL, STRING,
     ERROR, END_OF_FILE;
