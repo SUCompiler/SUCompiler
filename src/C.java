@@ -49,12 +49,22 @@ public class C
             parser.parse();
             source.close();
 			
-            iCode = parser.getICode();
-            symTabStack = parser.getSymTabStack();
+            if (parser.getErrorCount() == 0) {
+                iCode = parser.getICode();
+                symTabStack = parser.getSymTabStack();
 
-            if (xref) {
-                CrossReferencer crossReferencer = new CrossReferencer();
-                crossReferencer.print(symTabStack);
+                if (xref) {
+                    CrossReferencer crossReferencer = new CrossReferencer();
+                    crossReferencer.print(symTabStack);
+                }
+
+                if (intermediate) {
+                    ParseTreePrinter treePrinter =
+                                         new ParseTreePrinter(System.out);
+                    treePrinter.print(iCode);
+                }
+
+                backend.process(iCode, symTabStack);
             }
 
             backend.process(iCode, symTabStack);
@@ -64,7 +74,7 @@ public class C
             ex.printStackTrace();
         }
     }
-
+    private static final int PREFIX_WIDTH = 5;
     private static final String FLAGS = "[-ix]";
     private static final String USAGE =
         "Usage: C execute|compile " + FLAGS + " <source file path>";
@@ -149,7 +159,6 @@ public class C
         "\n%,20d syntax errors." +
         "\n%,20.2f seconds total parsing time.\n";
 
-    private static final int PREFIX_WIDTH = 5;
 
     /**
      * Listener for parser messages.
@@ -190,7 +199,19 @@ public class C
 
                     break;
                 }
+                
+                case PARSER_SUMMARY: {
+                    Number body[] = (Number[]) message.getBody();
+                    int statementCount = (Integer) body[0];
+                    int syntaxErrors = (Integer) body[1];
+                    float elapsedTime = (Float) body[2];
 
+                    System.out.printf(PARSER_SUMMARY_FORMAT,
+                                      statementCount, syntaxErrors,
+                                      elapsedTime);
+                    break;
+                }
+                
                 case SYNTAX_ERROR: {
                     Object body[] = (Object []) message.getBody();
                     int lineNumber = (Integer) body[0];
@@ -216,18 +237,6 @@ public class C
                     }
 
                     System.out.println(flagBuffer.toString());
-                    break;
-                }
-
-                case PARSER_SUMMARY: {
-                    Number body[] = (Number[]) message.getBody();
-                    int statementCount = (Integer) body[0];
-                    int syntaxErrors = (Integer) body[1];
-                    float elapsedTime = (Float) body[2];
-
-                    System.out.printf(PARSER_SUMMARY_FORMAT,
-                                      statementCount, syntaxErrors,
-                                      elapsedTime);
                     break;
                 }
             }

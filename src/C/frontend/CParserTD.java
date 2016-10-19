@@ -4,6 +4,7 @@ import wci.frontend.*;
 import wci.intermediate.*;
 import wci.message.Message;
 
+import C.frontend.parsers.*;
 import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
@@ -22,6 +23,15 @@ public class CParserTD extends Parser
     {
         super(scanner);
     }
+    
+    /**
+     * Constructor for subclasses.
+     * @param parent the parent parser.
+     */
+    public CParserTD(CParserTD parent)
+    {
+        super(parent.getScanner());
+    }
 
     /**
      * Parse a Pascal source program and generate the symbol table
@@ -30,45 +40,32 @@ public class CParserTD extends Parser
     public void parse()
         throws Exception
     {
-        Token token;
-        long startTime = System.currentTimeMillis();
+    	long startTime = System.currentTimeMillis();
+        iCode = ICodeFactory.createICode();
 
         try {
+            Token token = nextToken();
+            ICodeNode rootNode = null;
 
-            // Loop over each token until the end of file.
-            while (!((token = nextToken()) instanceof EofToken)) {
-                TokenType tokenType = token.getType();
-                
-//                if (tokenType != ERROR) {
-//
-//                    // Format each token.
-//                    sendMessage(new Message(TOKEN,
-//                                            new Object[] {token.getLineNumber(),
-//                                                          token.getPosition(),
-//                                                          tokenType,
-//                                                          token.getText(),
-//                                                          token.getValue()}));
-//                }
-                
-                // Cross reference only the identifiers.
-                if (tokenType == IDENTIFIER) {
-                    String name = token.getText().toLowerCase();
+            // Look for the LEFT_BRACE token to parse a compound statement.
+            if (token.getType() == LEFT_BRACE) {
+                StatementParser statementParser = new StatementParser(this);
+                rootNode = statementParser.parse(token);
+                token = currentToken();
+            }
+            else {
+                errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+            }
 
-                    // If it's not already in the symbol table,
-                    // create and enter a new entry for the identifier.
-                    SymTabEntry entry = symTabStack.lookup(name);
-                    if (entry == null) {
-                        entry = symTabStack.enterLocal(name);
-                    }
+//            // Look for the final period.
+//            if (token.getType() != RIGHT_BRACE) {
+//                errorHandler.flag(token, MISSING_RIGHT_BRACE, this);
+//            }
+            token = currentToken();
 
-                    // Append the current line number to the entry.
-                    entry.appendLineNumber(token.getLineNumber());
-                }
-                else if (tokenType == ERROR) {
-                    errorHandler.flag(token, (CErrorCode) token.getValue(),
-                                      this);
-                }
-
+            // Set the parse tree root node.
+            if (rootNode != null) {
+                iCode.setRoot(rootNode);
             }
 
             // Send the parser summary message.
@@ -79,7 +76,6 @@ public class CParserTD extends Parser
                                                   elapsedTime}));
         }
         catch (java.io.IOException ex) {
-        	System.out.println("error");
             errorHandler.abortTranslation(IO_ERROR, this);
         }
     }

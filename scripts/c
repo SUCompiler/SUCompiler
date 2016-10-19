@@ -1,4 +1,13 @@
-// result=${PWD}
-// $result = $result + "/start C compile -ix"
-// echo $result
-// $result + '/start C compile -ix' $1 
+#!/usr/bin/env bash
+
+# Sample usage: start execute|compile [-ix] <source file path>
+if [ ! -d "classes" ]; then
+	mkdir classes
+fi
+
+rm -rf classes/*
+
+javac -classpath classes -d classes -sourcepath src src/*.java
+
+java -classpath classes C compile -xi "$@"
+

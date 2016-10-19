@@ -25,6 +25,7 @@ public enum CErrorCode
     MISSING_RIGHT_PAREN("Missing )"),
     MISSING_SEMICOLON("Missing ;"),
     MISSING_VARIABLE("Missing variable"),
+    MISSING_RIGHT_BRACE("Missing left brace }"),
     NOT_TYPE_IDENTIFIER("Not a type identifier"),
     MIN_GT_MAX("Min limit greater than max limit"),
     RANGE_INTEGER("Integer literal out of range"),

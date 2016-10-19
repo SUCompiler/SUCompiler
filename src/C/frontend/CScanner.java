@@ -30,7 +30,7 @@ public class CScanner extends Scanner
         skipWhiteSpace();
         Token token;
         char currentChar = currentChar();
-
+        
         // Construct the next token.  The current character determines the
         // token type.
         if (currentChar == EOF) {
@@ -69,22 +69,21 @@ public class CScanner extends Scanner
     	char COMMENT_ENDs = '*';
     	
         char currentChar = currentChar();
-
-        while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START)) {
+        char nextChar = peekChar();
+        
+        while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START && nextChar == '*')) {
         	
             // Start of a comment?
             if (currentChar == COMMENT_START) {
             	currentChar = nextChar();
-            	if (currentChar == '*') {
-            		do {
-                        currentChar = nextChar();  // consume comment characters
-                    } while ((currentChar != COMMENT_ENDs) && (currentChar != EOF));
-            		
-                    // Found closing '}'?
-                    if (currentChar == COMMENT_ENDs && nextChar() == '/') {
-                        currentChar = nextChar();  // consume the '}'
-                    }
-            	}
+        		do {
+                    currentChar = nextChar();  // consume comment characters
+                } while ((currentChar != COMMENT_ENDs) && (currentChar != EOF));
+        		
+                // Found closing '}'?
+                if (currentChar == COMMENT_ENDs && nextChar() == '/') {
+                    currentChar = nextChar();  // consume the '}'
+                }
             }
 
             // Not a comment.

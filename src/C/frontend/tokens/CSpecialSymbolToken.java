@@ -51,7 +51,7 @@ public class CSpecialSymbolToken extends CToken
         
         String[] oneCharSymbol = new String[] {
         		"+", "-", ",", "\"", ";", "\'", "(", ")", 
-        		"{", "}", "#", ".", "<", ">", "="
+        		"{", "}", "#", ".", "<", ">", "=", "/", "*"
         };
         String[] twoCharSymbol = new String[] {
         		"+=", "-=", "==", "!=", "<=", ">=", "||", "&&"
@@ -59,7 +59,7 @@ public class CSpecialSymbolToken extends CToken
         
         int index = -1;
         index = comsumeCharSymbol(text, oneCharSymbol);
-        
+
         if (peekChar() != ' ' || peekChar() != '\n') {
         	String tmpWord = text + String.valueOf(peekChar());
         	int tmpIndex = comsumeCharSymbol(tmpWord, twoCharSymbol);
@@ -69,119 +69,12 @@ public class CSpecialSymbolToken extends CToken
         		nextChar();
         	}
         }
+        
         nextChar();
         if(index <= -1) {
         	type = ERROR;
         	value = INVALID_CHARACTER;
         }
-        
-//        switch (currentChar) {
-//
-//            // Single-character special symbols.
-//            case '+':  case '-':  	 case ',':	case '\"':
-//            case ';':  case '\'':  	case '(':  	case ')':
-//            case '{':  case '}': 	case '#': 	case '.':  {
-//                nextChar();  // consume character
-//                break;
-//            }
-//            
-//            case '*': {
-//                currentChar = nextChar();  // consume '|';
-//
-//                if (currentChar == '/') {
-//                    text += currentChar;
-//                    nextChar();  // consume second '|'
-//                } else {
-//                    type = ERROR;
-//                    value = INVALID_CHARACTER;
-//                }
-//
-//                break;
-//            }
-//            
-//            case '/': {
-//                currentChar = nextChar();  // consume '|';
-//
-//                if (currentChar == '*') {
-//                    text += currentChar;
-//                    nextChar();  // consume second '|'
-//                } else {
-//                    type = ERROR;
-//                    value = INVALID_CHARACTER;
-//                }
-//
-//                break;
-//            }
-//
-//            case '|': {
-//                currentChar = nextChar();  // consume '|';
-//
-//                if (currentChar == '|') {
-//                    text += currentChar;
-//                    nextChar();  // consume second '|'
-//                } else {
-//                    type = ERROR;
-//                    value = INVALID_CHARACTER;
-//                }
-//
-//                break;
-//            }
-//
-//            // !=
-//            case '!': {
-//                currentChar = nextChar();  // consume '!';
-//
-//                if (currentChar == '=') {
-//                    text += currentChar;
-//                    nextChar();  // consume second '='
-//                }
-//
-//                break;
-//            }
-//
-//            // = or ==
-//            case '=': {
-//                currentChar = nextChar();  // consume first '=';
-//
-//                if (currentChar == '=') {
-//                    text += currentChar;
-//                    nextChar();  // consume second '='
-//                }
-//
-//                break;
-//            }
-//
-//            // < or <= 
-//            case '<': {
-//                currentChar = nextChar();  // consume '<';
-//
-//                if (currentChar == '=') {
-//                    text += currentChar;
-//                    nextChar();  // consume '='
-//                }
-//
-//                break;
-//            }
-//
-//            // > or >=
-//            case '>': {
-//                currentChar = nextChar();  // consume '>';
-//
-//                if (currentChar == '=') {
-//                    text += currentChar;
-//                    nextChar();  // consume '='
-//                }
-//
-//                break;
-//            }
-//
-//
-//            default: {
-//                nextChar();  // consume bad character
-//                type = ERROR;
-//                value = INVALID_CHARACTER;
-//            }
-//        }
 
         // Set the type if it wasn't an error.
         if (type == null) {

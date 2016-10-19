@@ -42,7 +42,7 @@ public class CWordToken extends CToken
             textBuffer.append(currentChar);
             currentChar = nextChar();  // consume character
         }
-//        System.out.println(textBuffer);
+        
         text = textBuffer.toString();
 
         // Is it a reserved word or an identifier?
