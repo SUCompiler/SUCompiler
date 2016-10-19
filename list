@@ -2,4 +2,5 @@ Cleanup
 
 Add "//" comment CScanner (Eric)
 Fix 5dsfds indentifier in CNumberToken (Eric)
-Fix tokentype  in CTokenType (Amber)
+While loop
+Update to chapter 7
