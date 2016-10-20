@@ -24,6 +24,11 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
  */
 public class ExpressionParser extends StatementParser
 {
+    // Synchronization set for starting an expression.
+    static final EnumSet<CTokenType> EXPR_START_SET =
+        EnumSet.of(PLUS, MINUS, IDENTIFIER, INTEGER, REAL, STRING,
+                   CTokenType.NOT, LEFT_PAREN);
+                   
     /**
      * Constructor.
      * @param parent the parent parser.

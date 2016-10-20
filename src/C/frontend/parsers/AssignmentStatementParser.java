@@ -1,5 +1,7 @@
 package C.frontend.parsers;
 
+import java.util.EnumSet;
+
 import C.frontend.*;
 import wci.frontend.*;
 import wci.intermediate.*;
@@ -19,6 +21,14 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
  */
 public class AssignmentStatementParser extends StatementParser
 {
+    // Synchronization set for the = token.
+    private static final EnumSet<CTokenType> ASSIGNMENT_SET =
+        ExpressionParser.EXPR_START_SET.clone();
+    static {
+        ASSIGNMENT_SET.add(ASSIGNMENT);
+        ASSIGNMENT_SET.addAll(StatementParser.STMT_FOLLOW_SET);
+    }
+    
     /**
      * Constructor.
      * @param parent the parent parser.
@@ -58,7 +68,8 @@ public class AssignmentStatementParser extends StatementParser
         // The ASSIGN node adopts the variable node as its first child.
         assignNode.addChild(variableNode);
 
-        // Look for the := token.
+        // Synchronize on the := token.
+        token = synchronize(ASSIGNMENT_SET);
         if (token.getType() == ASSIGNMENT) {
             token = nextToken();  // consume the :=
         }
