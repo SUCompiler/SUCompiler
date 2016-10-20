@@ -1,0 +1,26 @@
+http://www.apropos-logic.com/wci/
+
+    To extract the code for Chapter 12, for example, enter the command
+    
+    	jar -xvf Chapter12.jar
+    to create the directory Chapter12 containing the Java source tree.
+
+Compile
+
+    To compile the Java code for Chapter 12, for example, enter the commands:
+    
+    	cd Chapter12
+    	mkdir classes
+    	javac -classpath classes -d classes -sourcepath src src/*.java
+    Of course, a much better way to work with the Java source tree is to load it into a development environment such as the Eclipse IDE for Java developers.
+
+Run
+
+    After compiling the Java code for Chapter 12, for example, the following command (entered while in directory Chapter12) will interpret the Pascal program hilbert.pas (enter 5 when it prompts for the rank):
+    
+    	java -classpath classes Pascal execute hilbert.pas
+    To view the cross-reference table and the intermediate code (parse trees), include the -x and -i options, respectively. You can combine the options as -ix:
+    
+    	java -classpath classes Pascal execute -ix hilbert.pas
+    The book describes each of the options i, x, l, a, f, c, and r.
+
