@@ -73,16 +73,4 @@ public abstract class Scanner
     {
         return source.nextChar();
     }
-    
-    /**
-     * Return the source character following the current character without
-     * consuming the current character.
-     * @return the following character.
-     * @throws Exception if an error occurred.
-     */
-    public char peekChar()
-        throws Exception
-    {
-    	return source.peekChar();
-    }
 }
