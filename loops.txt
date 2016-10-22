@@ -1,0 +1,6 @@
+BEGIN
+    i := 0;
+    WHILE i < 5 DO BEGIN
+	i := i + 1;
+    END
+END.

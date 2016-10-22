@@ -1,5 +1,7 @@
 package C.frontend.parsers;
 
+import java.util.EnumSet;
+
 import C.frontend.*;
 import wci.frontend.*;
 import wci.intermediate.*;
@@ -24,6 +26,15 @@ import static C.frontend.CErrorCode.*;
  * </p>
  */
 public class StatementParser extends CParserTD {
+	// Synchronization set for starting a statement.
+	protected static final EnumSet<CTokenType> STMT_START_SET =
+	    EnumSet.of(LEFT_BRACE, CTokenType.IF, WHILE,
+		      IDENTIFIER, SEMICOLON);
+
+	// Synchronization set for following a statement.
+	protected static final EnumSet<CTokenType> STMT_FOLLOW_SET =
+	    EnumSet.of(SEMICOLON, RIGHT_BRACE, ELSE);
+        
 	/**
 	 * Constructor.
 	 * 
@@ -48,24 +59,37 @@ public class StatementParser extends CParserTD {
 		ICodeNode statementNode = null;
 
 		switch ((CTokenType) token.getType()) {
-
-		case LEFT_BRACE: {
+		    case LEFT_BRACE: {
 			CompoundStatementParser compoundParser = new CompoundStatementParser(this);
 			statementNode = compoundParser.parse(token);
 			break;
-		}
-
-		// An assignment statement begins with a variable's identifier.
-		case IDENTIFIER: {
-			AssignmentStatementParser assignmentParser = new AssignmentStatementParser(this);
+		    }
+		
+		    // An assignment statement begins with a variable's identifier.
+		    case IDENTIFIER: {
+			AssignmentStatementParser assignmentParser =
+			    new AssignmentStatementParser(this);
 			statementNode = assignmentParser.parse(token);
 			break;
-		}
+		    }
 
-		default: {
+		    case WHILE: {
+			WhileStatementParser whileParser =
+			    new WhileStatementParser(this);
+			statementNode = whileParser.parse(token);
+			break;
+		    }
+		    /*
+		    case IF: {
+			IfStatementParser ifParser = new IfStatementParser(this);
+			statementNode = ifParser.parse(token);
+			break;
+		    }*/
+
+		    default: {
 			statementNode = ICodeFactory.createICodeNode(NO_OP);
 			break;
-		}
+		    }
 		}
 
 		// Set the current line number as an attribute.
