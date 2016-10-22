@@ -74,17 +74,17 @@ public class StatementParser extends CParserTD {
 		    }
 
 		    case WHILE: {
-			WhileStatementParser whileParser =
-			    new WhileStatementParser(this);
-			statementNode = whileParser.parse(token);
-			break;
+				WhileStatementParser whileParser =
+				    new WhileStatementParser(this);
+				statementNode = whileParser.parse(token);
+				break;
 		    }
-		    /*
+
 		    case IF: {
-			IfStatementParser ifParser = new IfStatementParser(this);
-			statementNode = ifParser.parse(token);
-			break;
-		    }*/
+				IfStatementParser ifParser = new IfStatementParser(this);
+				statementNode = ifParser.parse(token);
+				break;
+		    }
 
 		    default: {
 			statementNode = ICodeFactory.createICodeNode(NO_OP);
