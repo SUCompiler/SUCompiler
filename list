@@ -1,6 +1,3 @@
 Cleanup
 
-Add "//" comment CScanner (Eric)
-Fix 5dsfds indentifier in CNumberToken (Eric)
-While loop
-Update to chapter 7
+if statement

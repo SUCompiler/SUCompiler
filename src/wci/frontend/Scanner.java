@@ -85,4 +85,10 @@ public abstract class Scanner
     {
     	return source.peekChar();
     }
+    
+    public char skipLine()
+    		 throws Exception
+    {
+    	return source.skipLine();
+    }
 }

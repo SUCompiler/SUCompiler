@@ -71,6 +71,7 @@ public class CScanner extends Scanner
         char currentChar = currentChar();
         char nextChar = peekChar();
         
+        // /* */ Handler
         while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START && nextChar == '*')) {
         	
             // Start of a comment?
@@ -90,6 +91,12 @@ public class CScanner extends Scanner
             else {
                 currentChar = nextChar();  // consume whitespace character
             }
+        }
+        
+        // // Handler
+        if (currentChar == '/' && nextChar() == '/')
+        {        	
+        	skipLine();
         }
     }
 }
