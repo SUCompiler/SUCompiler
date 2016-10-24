@@ -82,6 +82,16 @@ public class AssignmentStatementParser extends StatementParser
         ExpressionParser expressionParser = new ExpressionParser(this);
         assignNode.addChild(expressionParser.parse(token));
 
+
+        token = currentToken();
+
+        if (token.getType() != SEMICOLON) {
+            errorHandler.flag(token, MISSING_SEMICOLON, this);
+        }
+
+        token = nextToken();
+  
+
         return assignNode;
     }
 }

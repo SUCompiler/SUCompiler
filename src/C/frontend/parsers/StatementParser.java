@@ -145,17 +145,17 @@ public class StatementParser extends CParserTD {
 				token = nextToken(); // consume the ;
 			}
 
-			// If at the start of the next assignment statement,
-			// then missing a semicolon.
-			else if (tokenType == IDENTIFIER) {
-				errorHandler.flag(token, MISSING_SEMICOLON, this);
-			}
-
-			// Unexpected token.
-			else if (tokenType != terminator) {
-				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-				token = nextToken(); // consume the unexpected token
-			}
+			//~ // If at the start of the next assignment statement,
+			//~ // then missing a semicolon.
+			//~ else if (tokenType == IDENTIFIER) {
+				//~ errorHandler.flag(token, MISSING_SEMICOLON, this);
+			//~ }
+//~ 
+			//~ // Unexpected token.
+			//~ else if (tokenType != terminator) {
+				//~ errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+				//~ token = nextToken(); // consume the unexpected token
+			//~ }
 		}
 
 		// Look for the terminator token.

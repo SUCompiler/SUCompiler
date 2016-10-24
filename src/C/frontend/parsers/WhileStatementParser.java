@@ -65,7 +65,7 @@ public class WhileStatementParser extends StatementParser
         ExpressionParser expressionParser = new ExpressionParser(this);
         notNode.addChild(expressionParser.parse(token));
 
-        // Synchronize at the DO.
+        // Synchronize at the DO_SET.
         token = synchronize(DO_SET);
 
 
