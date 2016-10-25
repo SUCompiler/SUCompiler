@@ -1,7 +1,3 @@
 Cleanup
 
 Comments inside of a block.  Both // and /* */
-
-Make sure all c files are .c
-
-Error check ;

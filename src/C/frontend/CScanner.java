@@ -72,18 +72,17 @@ public class CScanner extends Scanner
         char nextChar = peekChar();
         
         // /* */ Handler
-        while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START && nextChar == '*')) {
-        	
+        while (Character.isWhitespace(currentChar) || (currentChar == COMMENT_START && nextChar == COMMENT_ENDs)) {
             // Start of a comment?
             if (currentChar == COMMENT_START) {
             	currentChar = nextChar();
-        		do {
+		do {
                     currentChar = nextChar();  // consume comment characters
                 } while ((currentChar != COMMENT_ENDs) && (currentChar != EOF));
         		
-                // Found closing '}'?
-                if (currentChar == COMMENT_ENDs && nextChar() == '/') {
-                    currentChar = nextChar();  // consume the '}'
+                // Found closing '/'?
+                if (currentChar == COMMENT_ENDs && nextChar() == COMMENT_START) {
+                    currentChar = nextChar();  // consume the '/'
                 }
             }
 
