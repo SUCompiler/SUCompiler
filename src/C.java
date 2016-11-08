@@ -9,6 +9,7 @@ import wci.util.*;
 
 import static wci.message.MessageType.*;
 import static C.frontend.CTokenType.STRING;
+import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 
 /**
  * <h1>C</h1>
@@ -50,8 +51,11 @@ public class C
             source.close();
 			
             if (parser.getErrorCount() == 0) {
-                iCode = parser.getICode();
+            
                 symTabStack = parser.getSymTabStack();
+                SymTabEntry programId = symTabStack.getProgramId();
+                iCode = (ICode) programId.getAttribute(ROUTINE_ICODE);
+                
 
                 if (xref) {
                     CrossReferencer crossReferencer = new CrossReferencer();
@@ -61,7 +65,7 @@ public class C
                 if (intermediate) {
                     ParseTreePrinter treePrinter =
                                          new ParseTreePrinter(System.out);
-                    treePrinter.print(iCode);
+                    treePrinter.print(symTabStack);
                 }
 
                 backend.process(iCode, symTabStack);

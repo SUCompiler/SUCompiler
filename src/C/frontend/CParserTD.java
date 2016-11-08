@@ -5,11 +5,15 @@ import java.util.EnumSet;
 import wci.frontend.*;
 import wci.intermediate.*;
 import wci.message.Message;
+import wci.intermediate.symtabimpl.*;
+import wci.intermediate.typeimpl.*;
 
 import C.frontend.parsers.*;
+
 import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
+import static wci.intermediate.typeimpl.TypeFormImpl.*;
 import static wci.message.MessageType.*;
 
 
@@ -17,6 +21,8 @@ public class CParserTD extends Parser
 {
 	protected static CErrorHandler errorHandler = new CErrorHandler();
 	
+	private SymTabEntry routineId; // name of the routine being parsed
+	 
     /**
      * Constructor.
      * @param scanner the scanner to be used with this parser.
@@ -34,7 +40,10 @@ public class CParserTD extends Parser
     {
         super(parent.getScanner());
     }
-
+    public SymTabEntry getRoutineId()
+  {
+     return routineId;
+   }
     /**
      * Parse a Pascal source program and generate the symbol table
      * and the intermediate code.
@@ -43,21 +52,28 @@ public class CParserTD extends Parser
         throws Exception
     {
     	long startTime = System.currentTimeMillis();
-        iCode = ICodeFactory.createICode();
+        ICode iCode = ICodeFactory.createICode();
+        Predefined.initialize(symTabStack);
+        routineId = symTabStack.enterLocal("DummyProgramName".toLowerCase());
+	routineId.setDefinition(DefinitionImpl.PROGRAM);
+	symTabStack.setProgramId(routineId);
+
+ // Push a new symbol table onto the symbol table stack and set
+ // the routine's symbol table and intermediate code.
+ 	routineId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
+ 	routineId.setAttribute(ROUTINE_ICODE, iCode);
+
+ BlockParser blockParser = new BlockParser(this);
 
         try {
             Token token = nextToken();
-            ICodeNode rootNode = null;
+         
 
-            // Look for the LEFT_BRACE token to parse a compound statement.
-            if (token.getType() == LEFT_BRACE) {
-                StatementParser statementParser = new StatementParser(this);
-                rootNode = statementParser.parse(token);
-                token = currentToken();
-            }
-            else {
-                errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-            }
+           ICodeNode rootNode = blockParser.parse(token, routineId);
+ 	   iCode.setRoot(rootNode);
+ 	   symTabStack.pop();
+// Look for the final period.
+ 	   token = currentToken();
 
 //            // Look for the final period.
 //            if (token.getType() != RIGHT_BRACE) {
@@ -66,9 +82,7 @@ public class CParserTD extends Parser
             token = currentToken();
 
             // Set the parse tree root node.
-            if (rootNode != null) {
-                iCode.setRoot(rootNode);
-            }
+            
 
             // Send the parser summary message.
             float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;

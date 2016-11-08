@@ -4,7 +4,7 @@ CONST
     x = 'x';
     limit = -epsilon;
     hello = 'Hello, world!';
-
+    
 TYPE
     range1 = 0..ten;
     range2 = 'a'..'q';

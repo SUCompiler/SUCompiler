@@ -1,7 +1,11 @@
 package wci.frontend;
 
+import java.util.Arrays;
 import wci.frontend.pascal.PascalParserTD;
 import wci.frontend.pascal.PascalScanner;
+import java.lang.String;
+import C.frontend.CParserTD;
+import C.frontend.CScanner;
 
 /**
  * <h1>FrontendFactory</h1>
@@ -25,13 +29,27 @@ public class FrontendFactory
                                       Source source)
         throws Exception
     {
-        if (language.equalsIgnoreCase("Pascal") &&
+    	String[] supportedLanguages = {"Pascal", "C"};
+    	boolean isLanguageSupported = Arrays.asList(supportedLanguages).contains(language);
+    	
+        if ( isLanguageSupported &&
             type.equalsIgnoreCase("top-down"))
         {
-            Scanner scanner = new PascalScanner(source);
-            return new PascalParserTD(scanner);
+        	Scanner scanner;
+        	System.out.println(language);
+        	switch (language) {
+	        	case "Pascal":
+	        		scanner = new PascalScanner(source);
+	                return new PascalParserTD(scanner);
+	        	case "C":
+	        		scanner = new CScanner(source);
+	                return new CParserTD(scanner);
+	            default:
+	            	throw new Exception("Parser factory: Invalid language '" +
+                            language + "'");
+        	}
         }
-        else if (!language.equalsIgnoreCase("Pascal")) {
+        else if (!isLanguageSupported) {
             throw new Exception("Parser factory: Invalid language '" +
                                 language + "'");
         }
