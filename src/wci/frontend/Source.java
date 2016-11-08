@@ -164,15 +164,6 @@ public class Source implements MessageProducer
             }
         }
     }
-    
-    public char skipLine()
-    		throws Exception
-    {
-    	readLine();
-    	
-    	return nextChar();
-    }
-    
 
     /**
      * Add a parser message listener.
