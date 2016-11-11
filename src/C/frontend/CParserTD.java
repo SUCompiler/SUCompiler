@@ -22,7 +22,7 @@ public class CParserTD extends Parser
 	protected static CErrorHandler errorHandler = new CErrorHandler();
 	
 	private SymTabEntry routineId; // name of the routine being parsed
-	 
+
     /**
      * Constructor.
      * @param scanner the scanner to be used with this parser.
@@ -40,10 +40,11 @@ public class CParserTD extends Parser
     {
         super(parent.getScanner());
     }
+    
     public SymTabEntry getRoutineId()
-  {
-     return routineId;
-   }
+    {
+       return routineId;
+    }
     /**
      * Parse a Pascal source program and generate the symbol table
      * and the intermediate code.
@@ -55,25 +56,25 @@ public class CParserTD extends Parser
         ICode iCode = ICodeFactory.createICode();
         Predefined.initialize(symTabStack);
         routineId = symTabStack.enterLocal("DummyProgramName".toLowerCase());
-	routineId.setDefinition(DefinitionImpl.PROGRAM);
-	symTabStack.setProgramId(routineId);
+        routineId.setDefinition(DefinitionImpl.PROGRAM);
+        symTabStack.setProgramId(routineId);
 
- // Push a new symbol table onto the symbol table stack and set
- // the routine's symbol table and intermediate code.
- 	routineId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
- 	routineId.setAttribute(ROUTINE_ICODE, iCode);
+        // Push a new symbol table onto the symbol table stack and set
+        // the routine's symbol table and intermediate code.
+        routineId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
+        routineId.setAttribute(ROUTINE_ICODE, iCode);
 
- BlockParser blockParser = new BlockParser(this);
+        BlockParser blockParser = new BlockParser(this);
 
         try {
             Token token = nextToken();
-         
 
-           ICodeNode rootNode = blockParser.parse(token, routineId);
- 	   iCode.setRoot(rootNode);
- 	   symTabStack.pop();
-// Look for the final period.
- 	   token = currentToken();
+
+            ICodeNode rootNode = blockParser.parse(token, routineId);
+            iCode.setRoot(rootNode);
+            symTabStack.pop();
+            // Look for the final period.
+            token = currentToken();
 
 //            // Look for the final period.
 //            if (token.getType() != RIGHT_BRACE) {
@@ -87,9 +88,9 @@ public class CParserTD extends Parser
             // Send the parser summary message.
             float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
             sendMessage(new Message(PARSER_SUMMARY,
-                                    new Number[] {token.getLineNumber(),
-                                                  getErrorCount(),
-                                                  elapsedTime}));
+                new Number[] {token.getLineNumber(),
+                  getErrorCount(),
+                  elapsedTime}));
         }
         catch (java.io.IOException ex) {
             errorHandler.abortTranslation(IO_ERROR, this);
@@ -112,7 +113,7 @@ public class CParserTD extends Parser
      * @throws Exception if an error occurred.
      */
     public Token synchronize(EnumSet syncSet)
-        throws Exception
+    throws Exception
     {
         Token token = currentToken();
 
@@ -128,9 +129,9 @@ public class CParserTD extends Parser
             do {
                 token = nextToken();
             } while (!(token instanceof EofToken) &&
-                     !syncSet.contains(token.getType()));
-       }
+               !syncSet.contains(token.getType()));
+        }
 
-       return token;
+        return token;
     }
 }

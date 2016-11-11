@@ -60,17 +60,17 @@ public class StatementParser extends CParserTD {
 
 		switch ((CTokenType) token.getType()) {
 		    case LEFT_BRACE: {
-			CompoundStatementParser compoundParser = new CompoundStatementParser(this);
-			statementNode = compoundParser.parse(token);
-			break;
+				CompoundStatementParser compoundParser = new CompoundStatementParser(this);
+				statementNode = compoundParser.parse(token);
+				break;
 		    }
 		
 		    // An assignment statement begins with a variable's identifier.
 		    case IDENTIFIER: {
-			AssignmentStatementParser assignmentParser =
-			    new AssignmentStatementParser(this);
-			statementNode = assignmentParser.parse(token);
-			break;
+				AssignmentStatementParser assignmentParser =
+				    new AssignmentStatementParser(this);
+				statementNode = assignmentParser.parse(token);
+				break;
 		    }
 
 		    case WHILE: {
@@ -87,8 +87,14 @@ public class StatementParser extends CParserTD {
 		    }
 
 		    default: {
-			statementNode = ICodeFactory.createICodeNode(NO_OP);
-			break;
+		    	if (VariableDeclarationsParser.IDENTIFIER_SET.contains(token.getType())) 
+		    	{
+		    		VariableDeclarationsParser declarePaser = new VariableDeclarationsParser(this);
+		    		declarePaser.parse(token);
+		    	}
+
+				statementNode = ICodeFactory.createICodeNode(NO_OP);
+				break;
 		    }
 		}
 

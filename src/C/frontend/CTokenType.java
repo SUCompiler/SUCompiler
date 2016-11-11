@@ -16,15 +16,15 @@ import wci.frontend.TokenType;
 public enum CTokenType implements TokenType
 {
     // Reserved words.
-    ELSE, IF, TRUE, FALSE, VOID, INT, BOOLEAN, RETURN, DIV,TYPE, VAR, CONST, MOD, 
-    WHILE,
+    ELSE, IF, TRUE, FALSE, VOID, BOOL, RETURN, DIV,TYPE, 
+    FLOAT, INT, CONST, MOD, WHILE,
 
     // Special symbols.
     PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), NOT("!"), COMMA(","),
     DOT("."), SEMICOLON(";"), QUOTE("\""), ASSIGNMENT("="), SINGLE_OR("|"), SINGLE_AND("&"),
     EQUALS("=="), NOT_EQUALS("!="), LESS_THAN("<"), LESS_EQUALS("<="),
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
-    LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"),
+    LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"), COLON(":"),
     COMMENTS_START("/*"), COMMENTS_END("*/"),
     MODULO("%"), LINE_COMM("//"),
     NUM_SIGN("#"),

@@ -1,5 +1,9 @@
 package C.frontend.parsers;
 
+import C.frontend.*;
+import static C.frontend.CTokenType.*;
+import static C.frontend.CErrorCode.*;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -8,8 +12,6 @@ import wci.frontend.pascal.*;
 import wci.intermediate.*;
 import wci.intermediate.symtabimpl.*;
 
-import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 import static wci.intermediate.symtabimpl.DefinitionImpl.*;
 import static wci.intermediate.typeimpl.TypeFormImpl.*;
@@ -46,21 +48,12 @@ public class VariableDeclarationsParser extends DeclarationsParser
     }
 
     // Synchronization set for a variable identifier.
-    static final EnumSet<PascalTokenType> IDENTIFIER_SET =
-        DeclarationsParser.VAR_START_SET.clone();
-    static {
-        IDENTIFIER_SET.add(IDENTIFIER);
-        IDENTIFIER_SET.add(END);
-        IDENTIFIER_SET.add(SEMICOLON);
-    }
+    static final EnumSet<CTokenType> IDENTIFIER_SET =
+        EnumSet.of(INT, BOOL, FLOAT, STRING);
 
     // Synchronization set for the start of the next definition or declaration.
-    static final EnumSet<PascalTokenType> NEXT_START_SET =
-        DeclarationsParser.ROUTINE_START_SET.clone();
-    static {
-        NEXT_START_SET.add(IDENTIFIER);
-        NEXT_START_SET.add(SEMICOLON);
-    }
+    static final EnumSet<CTokenType> NEXT_START_SET =
+        EnumSet.of(IDENTIFIER, SEMICOLON);
 
     /**
      * Parse variable declarations.
@@ -74,10 +67,12 @@ public class VariableDeclarationsParser extends DeclarationsParser
 
         // Loop to parse a sequence of variable declarations
         // separated by semicolons.
-        while (token.getType() == IDENTIFIER) {
+        while (IDENTIFIER_SET.contains(token.getType())) {
+            // Parse the type specification.
+            TypeSpec type = parseTypeSpec(token);
 
             // Parse the identifier sublist and its type specification.
-            parseIdentifierSublist(token);
+            ArrayList<SymTabEntry> sublist = parseIdentifierSublist(token);
 
             token = currentToken();
             TokenType tokenType = token.getType();
@@ -87,6 +82,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
                 while (token.getType() == SEMICOLON) {
                     token = nextToken();  // consume the ;
                 }
+
             }
 
             // If at the start of the next definition or declaration,
@@ -94,25 +90,28 @@ public class VariableDeclarationsParser extends DeclarationsParser
             else if (NEXT_START_SET.contains(tokenType)) {
                 errorHandler.flag(token, MISSING_SEMICOLON, this);
             }
-
-            token = synchronize(IDENTIFIER_SET);
+            
+            // Assign the type specification to each identifier in the list.
+            for (SymTabEntry variableId : sublist) {
+                variableId.setTypeSpec(type);
+            }
         }
     }
 
     // Synchronization set to start a sublist identifier.
-    static final EnumSet<PascalTokenType> IDENTIFIER_START_SET =
+    static final EnumSet<CTokenType> IDENTIFIER_START_SET =
         EnumSet.of(IDENTIFIER, COMMA);
-
-    // Synchronization set to follow a sublist identifier.
-    private static final EnumSet<PascalTokenType> IDENTIFIER_FOLLOW_SET =
-        EnumSet.of(COLON, SEMICOLON);
     static {
-        IDENTIFIER_FOLLOW_SET.addAll(DeclarationsParser.VAR_START_SET);
+        IDENTIFIER_START_SET.addAll(IDENTIFIER_SET);
     }
 
+    // Synchronization set to follow a sublist identifier.
+    private static final EnumSet<CTokenType> IDENTIFIER_FOLLOW_SET =
+        EnumSet.of(SEMICOLON);
+
     // Synchronization set for the , token.
-    private static final EnumSet<PascalTokenType> COMMA_SET =
-        EnumSet.of(COMMA, COLON, IDENTIFIER, SEMICOLON);
+    private static final EnumSet<CTokenType> COMMA_SET =
+        EnumSet.of(COMMA, IDENTIFIER, SEMICOLON);
 
     /**
      * Parse a sublist of identifiers and their type specification.
@@ -132,7 +131,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
             if (id != null) {
                 sublist.add(id);
             }
-
+            
             token = synchronize(COMMA_SET);
             TokenType tokenType = token.getType();
 
@@ -144,19 +143,9 @@ public class VariableDeclarationsParser extends DeclarationsParser
                     errorHandler.flag(token, MISSING_IDENTIFIER, this);
                 }
             }
-            else if (IDENTIFIER_START_SET.contains(tokenType)) {
-                errorHandler.flag(token, MISSING_COMMA, this);
-            }
+
+
         } while (!IDENTIFIER_FOLLOW_SET.contains(token.getType()));
-
-        // Parse the type specification.
-        TypeSpec type = parseTypeSpec(token);
-
-        // Assign the type specification to each identifier in the list.
-        for (SymTabEntry variableId : sublist) {
-            variableId.setTypeSpec(type);
-        }
-
         return sublist;
     }
 
@@ -195,7 +184,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
     }
 
     // Synchronization set for the : token.
-    private static final EnumSet<PascalTokenType> COLON_SET =
+    private static final EnumSet<CTokenType> COLON_SET =
         EnumSet.of(COLON, SEMICOLON);
 
     /**
@@ -207,15 +196,6 @@ public class VariableDeclarationsParser extends DeclarationsParser
     protected TypeSpec parseTypeSpec(Token token)
         throws Exception
     {
-        // Synchronize on the : token.
-        token = synchronize(COLON_SET);
-        if (token.getType() == COLON) {
-            token = nextToken(); // consume the :
-        }
-        else {
-            errorHandler.flag(token, MISSING_COLON, this);
-        }
-
         // Parse the type specification.
         TypeSpecificationParser typeSpecificationParser =
             new TypeSpecificationParser(this);

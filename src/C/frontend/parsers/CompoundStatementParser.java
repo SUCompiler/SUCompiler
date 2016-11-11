@@ -1,7 +1,6 @@
 package C.frontend.parsers;
 
 import C.frontend.*;
-import C.frontend.parsers.*;
 import wci.frontend.*;
 import wci.frontend.pascal.*;
 import wci.intermediate.*;

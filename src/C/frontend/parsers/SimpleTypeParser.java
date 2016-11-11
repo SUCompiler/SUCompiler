@@ -8,8 +8,10 @@ import wci.intermediate.*;
 import wci.intermediate.symtabimpl.*;
 import wci.intermediate.typeimpl.*;
 
-import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.frontend.pascal.PascalErrorCode.*;
+import C.frontend.*;
+import static C.frontend.CTokenType.*;
+import static C.frontend.CErrorCode.*;
+
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 import static wci.intermediate.symtabimpl.DefinitionImpl.*;
 import static wci.intermediate.typeimpl.TypeFormImpl.*;
@@ -36,13 +38,8 @@ class SimpleTypeParser extends TypeSpecificationParser
     }
 
     // Synchronization set for starting a simple type specification.
-    static final EnumSet<PascalTokenType> SIMPLE_TYPE_START_SET =
-        ConstantDefinitionsParser.CONSTANT_START_SET.clone();
-    static {
-        SIMPLE_TYPE_START_SET.add(LEFT_PAREN);
-        SIMPLE_TYPE_START_SET.add(COMMA);
-        SIMPLE_TYPE_START_SET.add(SEMICOLON);
-    }
+    static final EnumSet<CTokenType> SIMPLE_TYPE_START_SET =
+        VariableDeclarationsParser.IDENTIFIER_SET.clone();
 
     /**
      * Parse a simple Pascal type specification.
@@ -55,61 +52,56 @@ class SimpleTypeParser extends TypeSpecificationParser
     {
         // Synchronize at the start of a simple type specification.
         token = synchronize(SIMPLE_TYPE_START_SET);
-
-        switch ((PascalTokenType) token.getType()) {
-
-            case IDENTIFIER: {
-                String name = token.getText().toLowerCase();
-                SymTabEntry id = symTabStack.lookup(name);
-
-                if (id != null) {
-                    Definition definition = id.getDefinition();
-
-                    // It's either a type identifier
-                    // or the start of a subrange type.
-                    if (definition == DefinitionImpl.TYPE) {
-                        id.appendLineNumber(token.getLineNumber());
-                        token = nextToken();  // consume the identifier
-
-                        // Return the type of the referent type.
-                        return id.getTypeSpec();
-                    }
-                    else if ((definition != CONSTANT) &&
-                             (definition != ENUMERATION_CONSTANT)) {
-                        errorHandler.flag(token, NOT_TYPE_IDENTIFIER, this);
-                        token = nextToken();  // consume the identifier
-                        return null;
-                    }
-                    else {
-                        SubrangeTypeParser subrangeTypeParser =
-                            new SubrangeTypeParser(this);
-                        return subrangeTypeParser.parse(token);
-                    }
-                }
-                else {
-                    errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
-                    token = nextToken();  // consume the identifier
-                    return null;
-                }
+        String name = "";
+        
+        switch ((CTokenType) token.getType()) {
+            case INT: {
+                name = "integer";
+                break;
             }
-
-            case LEFT_PAREN: {
-                EnumerationTypeParser enumerationTypeParser =
-                    new EnumerationTypeParser(this);
-                return enumerationTypeParser.parse(token);
+            case BOOL: {
+                name = "boolean";
+                break;
             }
-
-            case COMMA:
-            case SEMICOLON: {
-                errorHandler.flag(token, INVALID_TYPE, this);
-                return null;
+            case STRING: {
+                name = "string";
+                break;
+            }
+            case FLOAT: {
+                name = "real";
+                break;
             }
 
             default: {
-                SubrangeTypeParser subrangeTypeParser =
-                    new SubrangeTypeParser(this);
-                return subrangeTypeParser.parse(token);
+                errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+                token = nextToken();  // consume the identifier
+                return null;
             }
+        }
+
+        SymTabEntry id = symTabStack.lookup(name);
+
+        if (id != null) {
+            Definition definition = id.getDefinition();
+
+            // It's either a type identifier
+            // or the start of a subrange type.
+            if (definition == DefinitionImpl.TYPE) {
+                id.appendLineNumber(token.getLineNumber());
+                token = nextToken();  // consume the identifier
+                
+                // Return the type of the referent type.
+                return id.getTypeSpec();
+            } else {
+                errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+                token = nextToken();  // consume the identifier
+                return null;
+            }
+        }
+        else {
+            errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+            token = nextToken();  // consume the identifier
+            return null;
         }
     }
 }

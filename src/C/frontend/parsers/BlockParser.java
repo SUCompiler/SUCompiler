@@ -1,7 +1,7 @@
 package C.frontend.parsers;
 
 import C.frontend.*;
-import wci.frontend.pascal.*;
+import wci.frontend.*;
 import wci.intermediate.*;
 
 import static C.frontend.CTokenType.*;
@@ -60,7 +60,7 @@ public class BlockParser extends CParserTD
 
             if (StatementParser.STMT_START_SET.contains(tokenType)) {
                 rootNode = ICodeFactory.createICodeNode(COMPOUND);
-                statementParser.parseList(token, rootNode, END, MISSING_LEFT_BRACE);
+                statementParser.parseList(token, rootNode, RIGHT_BRACE, MISSING_LEFT_BRACE);
             }
         }
 
