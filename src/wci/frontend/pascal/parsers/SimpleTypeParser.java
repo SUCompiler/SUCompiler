@@ -64,7 +64,7 @@ class SimpleTypeParser extends TypeSpecificationParser
 
                 if (id != null) {
                     Definition definition = id.getDefinition();
-                    System.out.println(token.getText());
+
                     // It's either a type identifier
                     // or the start of a subrange type.
                     if (definition == DefinitionImpl.TYPE) {

@@ -68,9 +68,7 @@ class TypeSpecificationParser extends PascalParserTD
 
             default: {
                 SimpleTypeParser simpleTypeParser = new SimpleTypeParser(this);
-                TypeSpec typeSpec = simpleTypeParser.parse(token);
-                System.out.print(typeSpec);
-                return typeSpec;
+                return simpleTypeParser.parse(token);
             }
         }
     }
