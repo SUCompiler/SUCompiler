@@ -54,15 +54,19 @@ public class VariableDeclarationsParser extends DeclarationsParser
     public SymTabEntry parse(Token token, SymTabEntry parentId, Token typeToken, Token identifierToken)
         throws Exception
     {
+        System.out.println("ba");
+        System.out.println(currentToken().getText());
         // Parse the type specification.
         TypeSpec type = parseTypeSpec(typeToken);
-
+        System.out.println("hi");
+        System.out.println(currentToken().getText());
         // Parse the identifier sublist and its type specification.
         ArrayList<SymTabEntry> sublist = parseIdentifierSublist(token, identifierToken, IDENTIFIER_FOLLOW_SET, COMMA_SET);
 
         token = currentToken();
         TokenType tokenType = token.getType();
-
+        System.out.println("hiiiiiiiii");
+        System.out.println(token.getText());
         // Look for one or more semicolons after a definition.
         if (tokenType == SEMICOLON) {
             while (token.getType() == SEMICOLON) {
@@ -81,6 +85,8 @@ public class VariableDeclarationsParser extends DeclarationsParser
         for (SymTabEntry variableId : sublist) {
             variableId.setTypeSpec(type);
         }
+        System.out.println(token.getText());
+        System.out.println(currentToken().getText());
 
         return null;
     }
@@ -202,13 +208,18 @@ public class VariableDeclarationsParser extends DeclarationsParser
         throws Exception
     {
         ArrayList<SymTabEntry> sublist = new ArrayList<SymTabEntry>();
-        token = nextToken();
-        SymTabEntry firstId = parseIdentifier(firstIdentifier);
+        System.out.println(currentToken().getText());
+        SymTabEntry firstId = parseIdentifier1(firstIdentifier);
         if (firstId != null) {
             sublist.add(firstId);
         }
-        System.out.println(token.getType());
-        System.out.println(token.getText());
+        TokenType tokenType = token.getType();
+
+        // Look for the comma.
+        if (tokenType == COMMA) {
+            token = nextToken();  // consume the comma
+        }
+
         do {
             token = synchronize(IDENTIFIER_START_SET);
             SymTabEntry id = parseIdentifier(token);
@@ -218,12 +229,11 @@ public class VariableDeclarationsParser extends DeclarationsParser
             }
             
             token = synchronize(commaSet);
-            TokenType tokenType = token.getType();
+            tokenType = token.getType();
 
             // Look for the comma.
             if (tokenType == COMMA) {
                 token = nextToken();  // consume the comma
-
                 if (followSet.contains(token.getType())) {
                     errorHandler.flag(token, MISSING_IDENTIFIER, this);
                 }
@@ -260,6 +270,32 @@ public class VariableDeclarationsParser extends DeclarationsParser
             }
 
             token = nextToken();   // consume the identifier token
+        }
+        else {
+            errorHandler.flag(token, MISSING_IDENTIFIER, this);
+        }
+
+        return id;
+    }
+
+    private SymTabEntry parseIdentifier1(Token token)
+        throws Exception
+    {
+        SymTabEntry id = null;
+        System.out.println(token.getText() + " wow");
+        if (token.getType() == IDENTIFIER) {
+            String name = token.getText().toLowerCase();
+            id = symTabStack.lookupLocal(name);
+
+            // Enter a new identifier into the symbol table.
+            if (id == null) {
+                id = symTabStack.enterLocal(name);
+                id.setDefinition(definition);
+                id.appendLineNumber(token.getLineNumber());
+            }
+            else {
+                errorHandler.flag(token, IDENTIFIER_REDEFINED, this);
+            }
         }
         else {
             errorHandler.flag(token, MISSING_IDENTIFIER, this);

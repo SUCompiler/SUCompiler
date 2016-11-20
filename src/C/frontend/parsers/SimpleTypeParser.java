@@ -50,7 +50,7 @@ class SimpleTypeParser extends TypeSpecificationParser
         throws Exception
     {
         // Synchronize at the start of a simple type specification.
-        token = synchronize(SIMPLE_TYPE_START_SET);
+        // token = synchronize(SIMPLE_TYPE_START_SET);
         String name = "";
         
         switch ((CTokenType) token.getType()) {
@@ -79,10 +79,10 @@ class SimpleTypeParser extends TypeSpecificationParser
         }
 
         SymTabEntry id = symTabStack.lookup(name);
-
+        System.out.println(id != null);
         if (id != null) {
             Definition definition = id.getDefinition();
-
+            
             // It's either a type identifier
             // or the start of a subrange type.
             if (definition == DefinitionImpl.TYPE) {

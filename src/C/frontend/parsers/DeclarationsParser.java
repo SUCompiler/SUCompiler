@@ -64,11 +64,10 @@ public class DeclarationsParser extends CParserTD
         while (IDENTIFIER_SET.contains(token.getType())) {
             type = token;
             token = nextToken();
-            token = synchronize(DECLARATION_IDENTIFIER_SET);
             identifier = token;
             token = nextToken();
             TokenType tokenType = token.getType();
-            
+
             switch((CTokenType) tokenType) {
                 case LEFT_BRACE:
                     // Parse the program.
@@ -81,6 +80,9 @@ public class DeclarationsParser extends CParserTD
                     variableDeclarationsParser.setDefinition(VARIABLE);
                     variableDeclarationsParser.parse(token, null, type, identifier);
             }
+
+            System.out.println("hehehehe");
+            System.out.println(token.getText());
         }
 
         return null;
