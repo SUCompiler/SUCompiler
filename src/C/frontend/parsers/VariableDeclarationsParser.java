@@ -63,6 +63,8 @@ public class VariableDeclarationsParser extends DeclarationsParser
         token = currentToken();
         TokenType tokenType = token.getType();
 
+        System.out.println(token.getType());
+        
         // Look for one or more semicolons after a definition.
         if (tokenType == SEMICOLON) {
             while (token.getType() == SEMICOLON) {
@@ -203,12 +205,23 @@ public class VariableDeclarationsParser extends DeclarationsParser
     {
         ArrayList<SymTabEntry> sublist = new ArrayList<SymTabEntry>();
         token = nextToken();
-        SymTabEntry firstId = parseIdentifier(firstIdentifier);
+        SymTabEntry firstId = parseIdentifier1(firstIdentifier);
         if (firstId != null) {
             sublist.add(firstId);
         }
-        System.out.println(token.getType());
-        System.out.println(token.getText());
+        
+        token = synchronize(commaSet);
+        TokenType tokenType = token.getType();
+
+        // Look for the comma.
+        if (tokenType == COMMA) {
+            token = nextToken();  // consume the comma
+
+            if (followSet.contains(token.getType())) {
+                errorHandler.flag(token, MISSING_IDENTIFIER, this);
+            }
+        }        
+        
         do {
             token = synchronize(IDENTIFIER_START_SET);
             SymTabEntry id = parseIdentifier(token);
@@ -218,7 +231,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
             }
             
             token = synchronize(commaSet);
-            TokenType tokenType = token.getType();
+            tokenType = token.getType();
 
             // Look for the comma.
             if (tokenType == COMMA) {
@@ -267,6 +280,33 @@ public class VariableDeclarationsParser extends DeclarationsParser
 
         return id;
     }
+    
+    private SymTabEntry parseIdentifier1 (Token token)
+            throws Exception
+        {
+            SymTabEntry id = null;
+
+            if (token.getType() == IDENTIFIER) {
+                String name = token.getText().toLowerCase();
+                id = symTabStack.lookupLocal(name);
+
+                // Enter a new identifier into the symbol table.
+                if (id == null) {
+                    id = symTabStack.enterLocal(name);
+                    id.setDefinition(definition);
+                    id.appendLineNumber(token.getLineNumber());
+                }
+                else {
+                    errorHandler.flag(token, IDENTIFIER_REDEFINED, this);
+                }     
+
+            }
+            else {
+                errorHandler.flag(token, MISSING_IDENTIFIER, this);
+            }
+
+            return id;
+        }
 
     // Synchronization set for the : token.
     private static final EnumSet<CTokenType> COLON_SET =

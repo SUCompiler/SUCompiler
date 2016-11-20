@@ -48,7 +48,7 @@ class TypeSpecificationParser extends CParserTD
         throws Exception
     {
         // Synchronize at the start of a type specification.
-        token = synchronize(TYPE_START_SET);
+        //token = synchronize(TYPE_START_SET);
 
         SimpleTypeParser simpleTypeParser = new SimpleTypeParser(this);
         return simpleTypeParser.parse(token);

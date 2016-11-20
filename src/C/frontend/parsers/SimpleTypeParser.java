@@ -50,7 +50,7 @@ class SimpleTypeParser extends TypeSpecificationParser
         throws Exception
     {
         // Synchronize at the start of a simple type specification.
-        token = synchronize(SIMPLE_TYPE_START_SET);
+        //token = synchronize(SIMPLE_TYPE_START_SET);
         String name = "";
         
         switch ((CTokenType) token.getType()) {
@@ -93,7 +93,7 @@ class SimpleTypeParser extends TypeSpecificationParser
                 return id.getTypeSpec();
             } else {
                 errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
-                token = nextToken();  // consume the identifier
+                //token = nextToken();  // consume the identifier
                 return null;
             }
         }
