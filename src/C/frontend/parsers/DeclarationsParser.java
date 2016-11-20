@@ -71,8 +71,8 @@ public class DeclarationsParser extends CParserTD
             switch((CTokenType) tokenType) {
                 case LEFT_BRACE:
                     // Parse the program.
-                    // DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
-                    // routineParser.parse(token, parentId);
+                     DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
+                     routineParser.parse(token, parentId);
                     break;
                 default:
                     VariableDeclarationsParser variableDeclarationsParser =
