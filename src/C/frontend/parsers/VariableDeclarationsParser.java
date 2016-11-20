@@ -54,19 +54,16 @@ public class VariableDeclarationsParser extends DeclarationsParser
     public SymTabEntry parse(Token token, SymTabEntry parentId, Token typeToken, Token identifierToken)
         throws Exception
     {
-        System.out.println("ba");
-        System.out.println(currentToken().getText());
+
         // Parse the type specification.
         TypeSpec type = parseTypeSpec(typeToken);
-        System.out.println("hi");
-        System.out.println(currentToken().getText());
+
         // Parse the identifier sublist and its type specification.
         ArrayList<SymTabEntry> sublist = parseIdentifierSublist(token, identifierToken, IDENTIFIER_FOLLOW_SET, COMMA_SET);
 
         token = currentToken();
         TokenType tokenType = token.getType();
-        System.out.println("hiiiiiiiii");
-        System.out.println(token.getText());
+       
         // Look for one or more semicolons after a definition.
         if (tokenType == SEMICOLON) {
             while (token.getType() == SEMICOLON) {
@@ -85,8 +82,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
         for (SymTabEntry variableId : sublist) {
             variableId.setTypeSpec(type);
         }
-        System.out.println(token.getText());
-        System.out.println(currentToken().getText());
+
 
         return null;
     }
@@ -208,7 +204,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
         throws Exception
     {
         ArrayList<SymTabEntry> sublist = new ArrayList<SymTabEntry>();
-        System.out.println(currentToken().getText());
+       
         SymTabEntry firstId = parseIdentifier1(firstIdentifier);
         if (firstId != null) {
             sublist.add(firstId);
@@ -282,7 +278,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
         throws Exception
     {
         SymTabEntry id = null;
-        System.out.println(token.getText() + " wow");
+        
         if (token.getType() == IDENTIFIER) {
             String name = token.getText().toLowerCase();
             id = symTabStack.lookupLocal(name);
