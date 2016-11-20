@@ -81,7 +81,7 @@ public class DeclarationsParser extends CParserTD
                     variableDeclarationsParser.parse(token, null, type, identifier);
             }
 
-            
+            token = currentToken();
         }
 
         return null;
