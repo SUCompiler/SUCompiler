@@ -82,12 +82,11 @@ class SimpleTypeParser extends TypeSpecificationParser
         System.out.println(id != null);
         if (id != null) {
             Definition definition = id.getDefinition();
-            
+
             // It's either a type identifier
             // or the start of a subrange type.
             if (definition == DefinitionImpl.TYPE) {
                 id.appendLineNumber(token.getLineNumber());
-                token = nextToken();  // consume the identifier
                 
                 // Return the type of the referent type.
                 return id.getTypeSpec();

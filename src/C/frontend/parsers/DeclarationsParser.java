@@ -81,8 +81,7 @@ public class DeclarationsParser extends CParserTD
                     variableDeclarationsParser.parse(token, null, type, identifier);
             }
 
-            System.out.println("hehehehe");
-            System.out.println(token.getText());
+            
         }
 
         return null;
