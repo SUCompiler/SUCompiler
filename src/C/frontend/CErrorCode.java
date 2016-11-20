@@ -31,6 +31,7 @@ public enum CErrorCode
     MIN_GT_MAX("Min limit greater than max limit"),
     RANGE_INTEGER("Integer literal out of range"),
     STACK_OVERFLOW("Stack overflow"),
+    INVALID_VAR_PARM("Invalid VAR parameter"), //TODO check this one
     // TOO_MANY_LEVELS("Nesting level too deep"),
     // TOO_MANY_SUBSCRIPTS("Too many subscripts"),
     RANGE_REAL("Real literal out of range"),

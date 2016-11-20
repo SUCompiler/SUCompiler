@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import wci.frontend.*;
-import wci.frontend.pascal.*;
+import C.frontend.*;
 import wci.intermediate.*;
 import wci.intermediate.symtabimpl.*;
 
@@ -58,9 +58,11 @@ public class VariableDeclarationsParser extends DeclarationsParser
     /**
      * Parse variable declarations.
      * @param token the initial token.
+     * @param parentId the symbol table entry of the parent routine's name.
+     * @return null
      * @throws Exception if an error occurred.
      */
-    public void parse(Token token)
+    public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
         token = synchronize(IDENTIFIER_SET);
@@ -72,7 +74,7 @@ public class VariableDeclarationsParser extends DeclarationsParser
             TypeSpec type = parseTypeSpec(token);
 
             // Parse the identifier sublist and its type specification.
-            ArrayList<SymTabEntry> sublist = parseIdentifierSublist(token);
+            ArrayList<SymTabEntry> sublist = parseIdentifierSublist(token, IDENTIFIER_FOLLOW_SET, COMMA_SET);
 
             token = currentToken();
             TokenType tokenType = token.getType();
@@ -96,6 +98,8 @@ public class VariableDeclarationsParser extends DeclarationsParser
                 variableId.setTypeSpec(type);
             }
         }
+
+        return null;
     }
 
     // Synchronization set to start a sublist identifier.
@@ -116,10 +120,14 @@ public class VariableDeclarationsParser extends DeclarationsParser
     /**
      * Parse a sublist of identifiers and their type specification.
      * @param token the current token.
+     * @param followSet the synchronization set to follow an identifier.
      * @return the sublist of identifiers in a declaration.
      * @throws Exception if an error occurred.
      */
-    protected ArrayList<SymTabEntry> parseIdentifierSublist(Token token)
+    protected ArrayList<SymTabEntry> parseIdentifierSublist(
+                                         Token token,
+                                         EnumSet<CTokenType> followSet,
+                                         EnumSet<CTokenType> commaSet)
         throws Exception
     {
         ArrayList<SymTabEntry> sublist = new ArrayList<SymTabEntry>();
@@ -132,20 +140,20 @@ public class VariableDeclarationsParser extends DeclarationsParser
                 sublist.add(id);
             }
             
-            token = synchronize(COMMA_SET);
+            token = synchronize(commaSet);
             TokenType tokenType = token.getType();
 
             // Look for the comma.
             if (tokenType == COMMA) {
                 token = nextToken();  // consume the comma
 
-                if (IDENTIFIER_FOLLOW_SET.contains(token.getType())) {
+                if (followSet.contains(token.getType())) {
                     errorHandler.flag(token, MISSING_IDENTIFIER, this);
                 }
             }
 
 
-        } while (!IDENTIFIER_FOLLOW_SET.contains(token.getType()));
+        } while (!followSet.contains(token.getType()));
         return sublist;
     }
 
@@ -201,6 +209,13 @@ public class VariableDeclarationsParser extends DeclarationsParser
             new TypeSpecificationParser(this);
         TypeSpec type = typeSpecificationParser.parse(token);
 
+        // Formal parameters and functions must have named types.
+        if ((definition != VARIABLE) && (definition != FIELD) &&
+            (type != null) && (type.getIdentifier() == null))
+        {
+            errorHandler.flag(token, INVALID_TYPE, this);
+        }
+        
         return type;
     }
 }

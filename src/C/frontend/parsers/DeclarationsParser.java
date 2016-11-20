@@ -8,7 +8,6 @@ import static C.frontend.CErrorCode.*;
 import java.util.EnumSet;
 
 import wci.frontend.*;
-import wci.frontend.pascal.*;
 import wci.intermediate.*;
 
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
@@ -39,12 +38,13 @@ public class DeclarationsParser extends CParserTD
      * @param token the initial token.
      * @throws Exception if an error occurred.
      */
-    public void parse(Token token)
+    public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
         VariableDeclarationsParser variableDeclarationsParser =
             new VariableDeclarationsParser(this);
         variableDeclarationsParser.setDefinition(VARIABLE);
-        variableDeclarationsParser.parse(token);
+        variableDeclarationsParser.parse(token, null);
+        return null;
     }
 }

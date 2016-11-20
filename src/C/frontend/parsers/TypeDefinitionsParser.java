@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import wci.frontend.*;
-import wci.frontend.pascal.*;
 import wci.intermediate.*;
 import wci.intermediate.symtabimpl.*;
 
-import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 import static wci.intermediate.symtabimpl.DefinitionImpl.TYPE;
 import static wci.intermediate.typeimpl.TypeFormImpl.*;
@@ -35,14 +32,14 @@ public class TypeDefinitionsParser extends DeclarationsParser
     }
 
     // Synchronization set for a type identifier.
-    private static final EnumSet<PascalTokenType> IDENTIFIER_SET =
+    private static final EnumSet<CTokenType> IDENTIFIER_SET =
         DeclarationsParser.VAR_START_SET.clone();
     static {
         IDENTIFIER_SET.add(IDENTIFIER);
     }
 
     // Synchronization set for the = token.
-    private static final EnumSet<PascalTokenType> EQUALS_SET =
+    private static final EnumSet<CTokenType> EQUALS_SET =
         ConstantDefinitionsParser.CONSTANT_START_SET.clone();
     static {
         EQUALS_SET.add(EQUALS);
@@ -50,11 +47,11 @@ public class TypeDefinitionsParser extends DeclarationsParser
     }
 
     // Synchronization set for what follows a definition or declaration.
-    private static final EnumSet<PascalTokenType> FOLLOW_SET =
+    private static final EnumSet<CTokenType> FOLLOW_SET =
         EnumSet.of(SEMICOLON);
 
     // Synchronization set for the start of the next definition or declaration.
-    private static final EnumSet<PascalTokenType> NEXT_START_SET =
+    private static final EnumSet<CTokenType> NEXT_START_SET =
         DeclarationsParser.VAR_START_SET.clone();
     static {
         NEXT_START_SET.add(SEMICOLON);
@@ -64,9 +61,11 @@ public class TypeDefinitionsParser extends DeclarationsParser
     /**
      * Parse type definitions.
      * @param token the initial token.
+     * @param parentId the symbol table entry of the parent routine's name.
+     * @return null
      * @throws Exception if an error occurred.
      */
-    public void parse(Token token)
+    public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
         token = synchronize(IDENTIFIER_SET);
@@ -139,4 +138,6 @@ public class TypeDefinitionsParser extends DeclarationsParser
             token = synchronize(IDENTIFIER_SET);
         }
     }
+        
+    return null;
 }

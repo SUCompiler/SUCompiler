@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import C.frontend.*;
 import wci.frontend.*;
 import wci.intermediate.*;
+import wci.intermediate.symtabimpl.*;
+import wci.intermediate.typeimpl.*;
 
 import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
@@ -21,6 +23,8 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
  */
 public class AssignmentStatementParser extends StatementParser
 {
+    private boolean isFunctionTarget = false;
+
     // Synchronization set for the = token.
     private static final EnumSet<CTokenType> ASSIGNMENT_SET =
         ExpressionParser.EXPR_START_SET.clone();
@@ -28,7 +32,7 @@ public class AssignmentStatementParser extends StatementParser
         ASSIGNMENT_SET.add(ASSIGNMENT);
         ASSIGNMENT_SET.addAll(StatementParser.STMT_FOLLOW_SET);
     }
-    
+
     /**
      * Constructor.
      * @param parent the parent parser.
@@ -50,23 +54,16 @@ public class AssignmentStatementParser extends StatementParser
         // Create the ASSIGN node.
         ICodeNode assignNode = ICodeFactory.createICodeNode(ASSIGN);
 
-        // Look up the target identifer in the symbol table stack.
-        // Enter the identifier into the table if it's not found.
-        String targetName = token.getText().toLowerCase();
-        SymTabEntry targetId = symTabStack.lookup(targetName);
-        if (targetId == null) {
-            targetId = symTabStack.enterLocal(targetName);
-        }
-        targetId.appendLineNumber(token.getLineNumber());
-
-        token = nextToken();  // consume the identifier token
-
-        // Create the variable node and set its name attribute.
-        ICodeNode variableNode = ICodeFactory.createICodeNode(VARIABLE);
-        variableNode.setAttribute(ID, targetId);
+        // Parse the target variable.
+        VariableParser variableParser = new VariableParser(this);
+        ICodeNode targetNode = isFunctionTarget
+                             ? variableParser.parseFunctionNameTarget(token)
+                             : variableParser.parse(token);
+        TypeSpec targetType = targetNode != null ? targetNode.getTypeSpec()
+                                               : Predefined.undefinedType;
 
         // The ASSIGN node adopts the variable node as its first child.
-        assignNode.addChild(variableNode);
+        assignNode.addChild(targetNode);
 
         // Synchronize on the := token.
         token = synchronize(ASSIGNMENT_SET);
@@ -80,18 +77,39 @@ public class AssignmentStatementParser extends StatementParser
         // Parse the expression.  The ASSIGN node adopts the expression's
         // node as its second child.
         ExpressionParser expressionParser = new ExpressionParser(this);
-        assignNode.addChild(expressionParser.parse(token));
+        ICodeNode exprNode = expressionParser.parse(token);
+        assignNode.addChild(exprNode);
+
+        // Type check: Assignment compatible?
+        TypeSpec exprType = exprNode != null ? exprNode.getTypeSpec()
+                                             : Predefined.undefinedType;
+        if (!TypeChecker.areAssignmentCompatible(targetType, exprType)) {
+            errorHandler.flag(token, INCOMPATIBLE_TYPES, this);
+        }
+
+        assignNode.setTypeSpec(targetType);
 
 
         token = currentToken();
-
         if (token.getType() != SEMICOLON) {
             errorHandler.flag(token, MISSING_SEMICOLON, this);
         }
-
         token = nextToken();
-  
+
 
         return assignNode;
+    }
+
+    /**
+     * Parse an assignment to a function name.
+     * @param token Token
+     * @return ICodeNode
+     * @throws Exception
+     */
+    public ICodeNode parseFunctionNameAssignment(Token token)
+        throws Exception
+    {
+        isFunctionTarget = true;
+        return parse(token);
     }
 }

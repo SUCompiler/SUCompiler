@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import C.frontend.*;
 
 import wci.frontend.*;
-import wci.frontend.pascal.*;
 import wci.intermediate.*;
 import wci.intermediate.symtabimpl.*;
 

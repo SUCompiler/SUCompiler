@@ -20,8 +20,6 @@ import static wci.message.MessageType.*;
 public class CParserTD extends Parser
 {
 	protected static CErrorHandler errorHandler = new CErrorHandler();
-	
-	private SymTabEntry routineId; // name of the routine being parsed
 
     /**
      * Constructor.
@@ -31,7 +29,7 @@ public class CParserTD extends Parser
     {
         super(scanner);
     }
-    
+
     /**
      * Constructor for subclasses.
      * @param parent the parent parser.
@@ -40,10 +38,14 @@ public class CParserTD extends Parser
     {
         super(parent.getScanner());
     }
-    
-    public SymTabEntry getRoutineId()
+
+		/**
+     * Getter.
+     * @return the error handler.
+     */
+    public CErrorHandler getErrorHandler()
     {
-       return routineId;
+        return errorHandler;
     }
     /**
      * Parse a Pascal source program and generate the symbol table
@@ -52,49 +54,27 @@ public class CParserTD extends Parser
     public void parse()
         throws Exception
     {
-    	long startTime = System.currentTimeMillis();
-        ICode iCode = ICodeFactory.createICode();
-        Predefined.initialize(symTabStack);
-        routineId = symTabStack.enterLocal("DummyProgramName".toLowerCase());
-        routineId.setDefinition(DefinitionImpl.PROGRAM);
-        symTabStack.setProgramId(routineId);
+			long startTime = System.currentTimeMillis();
+			Predefined.initialize(symTabStack);
 
-        // Push a new symbol table onto the symbol table stack and set
-        // the routine's symbol table and intermediate code.
-        routineId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
-        routineId.setAttribute(ROUTINE_ICODE, iCode);
+			try {
+					Token token = nextToken();
 
-        BlockParser blockParser = new BlockParser(this);
+					// Parse a program.
+					ProgramParser programParser = new ProgramParser(this);
+					programParser.parse(token, null);
+					token = currentToken();
 
-        try {
-            Token token = nextToken();
-
-
-            ICodeNode rootNode = blockParser.parse(token, routineId);
-            iCode.setRoot(rootNode);
-            symTabStack.pop();
-            // Look for the final period.
-            token = currentToken();
-
-//            // Look for the final period.
-//            if (token.getType() != RIGHT_BRACE) {
-//                errorHandler.flag(token, MISSING_RIGHT_BRACE, this);
-//            }
-            token = currentToken();
-
-            // Set the parse tree root node.
-            
-
-            // Send the parser summary message.
-            float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
-            sendMessage(new Message(PARSER_SUMMARY,
-                new Number[] {token.getLineNumber(),
-                  getErrorCount(),
-                  elapsedTime}));
-        }
-        catch (java.io.IOException ex) {
-            errorHandler.abortTranslation(IO_ERROR, this);
-        }
+					// Send the parser summary message.
+					float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
+					sendMessage(new Message(PARSER_SUMMARY,
+																	new Number[] {token.getLineNumber(),
+																								getErrorCount(),
+																								elapsedTime}));
+			}
+			catch (java.io.IOException ex) {
+					errorHandler.abortTranslation(IO_ERROR, this);
+			}
     }
 
     /**
@@ -103,9 +83,9 @@ public class CParserTD extends Parser
      */
     public int getErrorCount()
     {
-        return 0;
+        return errorHandler.getErrorCount();
     }
-    
+
     /**
      * Synchronize the parser.
      * @param syncSet the set of token types for synchronizing the parser.

@@ -2,7 +2,6 @@ package C.frontend.parsers;
 
 import C.frontend.*;
 import wci.frontend.*;
-import wci.frontend.pascal.*;
 import wci.intermediate.*;
 
 import static C.frontend.CTokenType.*;
