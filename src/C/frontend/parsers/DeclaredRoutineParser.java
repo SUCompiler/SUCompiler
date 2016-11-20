@@ -40,6 +40,9 @@ public class DeclaredRoutineParser extends DeclarationsParser
     public SymTabEntry parse(Token token, SymTabEntry parentId, Token type, Token identifier)
             throws Exception
         {
+    	 System.out.println("Hello");
+         System.out.println(currentToken().getText());
+    	
             Definition routineDefn = null;
             String dummyName = null;
             SymTabEntry routineId = null;
@@ -87,12 +90,18 @@ public class DeclaredRoutineParser extends DeclarationsParser
 
             // Non-forwarded procedure or function: Append to the parent's list
             //                                      of routines.
-            else if (routineId.getAttribute(ROUTINE_CODE) != FORWARD) {
-                ArrayList<SymTabEntry> subroutines = (ArrayList<SymTabEntry>)
-                                           parentId.getAttribute(ROUTINE_ROUTINES);
-                subroutines.add(routineId);
-            }
-
+//            else if (routineId.getAttribute(ROUTINE_CODE) != FORWARD) {
+//                ArrayList<SymTabEntry> subroutines = (ArrayList<SymTabEntry>)
+//                                           parentId.getAttribute(ROUTINE_ROUTINES);
+//                subroutines.add(routineId);
+//            }
+            
+            System.out.println("Hello");
+            System.out.println(currentToken().getText());
+            parseHeader(token, routineId);
+            
+            System.out.println(currentToken().getText());
+            
             // If the routine was forwarded, there should not be
             // any formal parameters or a function return type.
             // But parse them anyway if they're there.
@@ -110,14 +119,14 @@ public class DeclaredRoutineParser extends DeclarationsParser
 
             // Look for the semicolon.
             token = currentToken();
-            if (token.getType() == SEMICOLON) {
-                do {
-                    token = nextToken();  // consume ;
-                } while (token.getType() == SEMICOLON);
-            }
-            else {
-                errorHandler.flag(token, MISSING_SEMICOLON, this);
-            }
+//            if (token.getType() == SEMICOLON) {
+//                do {
+//                    token = nextToken();  // consume ;
+//                } while (token.getType() == SEMICOLON);
+//            }
+//            else {
+//                errorHandler.flag(token, MISSING_SEMICOLON, this);
+//            }
 
             // Parse the routine's block or forward declaration.
             routineId.setAttribute(ROUTINE_CODE, DECLARED);
@@ -187,7 +196,8 @@ public class DeclaredRoutineParser extends DeclarationsParser
                                        parentId.getAttribute(ROUTINE_ROUTINES);
             subroutines.add(routineId);
         }
-
+        
+        
         // If the routine was forwarded, there should not be
         // any formal parameters or a function return type.
         // But parse them anyway if they're there.
@@ -433,23 +443,23 @@ public class DeclaredRoutineParser extends DeclarationsParser
         token = currentToken();
         tokenType = token.getType();
 
-        if (!isProgram) {
-
-            // Look for one or more semicolons after a sublist.
-            if (tokenType == SEMICOLON) {
-                while (token.getType() == SEMICOLON) {
-                    token = nextToken();  // consume the ;
-                }
-            }
-
-            // If at the start of the next sublist, then missing a semicolon.
-            else if (VariableDeclarationsParser.
-                         NEXT_START_SET.contains(tokenType)) {
-                errorHandler.flag(token, MISSING_SEMICOLON, this);
-            }
-
-            token = synchronize(PARAMETER_SET);
-        }
+//        if (!isProgram) {
+//
+//            // Look for one or more semicolons after a sublist.
+//            if (tokenType == SEMICOLON) {
+//                while (token.getType() == SEMICOLON) {
+//                    token = nextToken();  // consume the ;
+//                }
+//            }
+//
+//            // If at the start of the next sublist, then missing a semicolon.
+//            else if (VariableDeclarationsParser.
+//                         NEXT_START_SET.contains(tokenType)) {
+//                errorHandler.flag(token, MISSING_SEMICOLON, this);
+//            }
+//
+//            token = synchronize(PARAMETER_SET);
+//        }
 
         return sublist;
     }
