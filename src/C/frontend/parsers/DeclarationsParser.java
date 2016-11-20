@@ -23,6 +23,24 @@ import static wci.intermediate.symtabimpl.DefinitionImpl.VARIABLE;
  */
 public class DeclarationsParser extends CParserTD
 {
+    private Token type;
+    private Token identifier;
+
+    // Synchronization set for a variable identifier.
+    static protected final EnumSet<CTokenType> IDENTIFIER_SET =
+        EnumSet.of(INT, BOOL, FLOAT, STRING);
+
+    // Synchronization set for a variable identifier.
+    static protected final EnumSet<CTokenType> FUNCTION_SET = IDENTIFIER_SET.clone();
+
+    static {
+        FUNCTION_SET.add(VOID);
+    }
+
+    // Synchronization set for a variable identifier.
+    static protected final EnumSet<CTokenType> DECLARATION_IDENTIFIER_SET =
+        EnumSet.of(IDENTIFIER);
+
     /**
      * Constructor.
      * @param parent the parent parser.
@@ -41,10 +59,30 @@ public class DeclarationsParser extends CParserTD
     public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
-        VariableDeclarationsParser variableDeclarationsParser =
-            new VariableDeclarationsParser(this);
-        variableDeclarationsParser.setDefinition(VARIABLE);
-        variableDeclarationsParser.parse(token, null);
+        token = synchronize(IDENTIFIER_SET);
+
+        while (IDENTIFIER_SET.contains(token.getType())) {
+            type = token;
+            token = nextToken();
+            token = synchronize(DECLARATION_IDENTIFIER_SET);
+            identifier = token;
+            token = nextToken();
+            TokenType tokenType = token.getType();
+            
+            switch((CTokenType) tokenType) {
+                case LEFT_BRACE:
+                    // Parse the program.
+                    // DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
+                    // routineParser.parse(token, parentId);
+                    break;
+                default:
+                    VariableDeclarationsParser variableDeclarationsParser =
+                        new VariableDeclarationsParser(this);
+                    variableDeclarationsParser.setDefinition(VARIABLE);
+                    variableDeclarationsParser.parse(token, null, type, identifier);
+            }
+        }
+
         return null;
     }
 }

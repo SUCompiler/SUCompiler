@@ -59,7 +59,7 @@ public class StatementParser extends CParserTD {
 	 */
 	public ICodeNode parse(Token token) throws Exception {
 		ICodeNode statementNode = null;
-
+		
 		switch ((CTokenType) token.getType()) {
 		    case LEFT_BRACE: {
 				CompoundStatementParser compoundParser = new CompoundStatementParser(this);
@@ -106,6 +106,7 @@ public class StatementParser extends CParserTD {
                         token = nextToken();  // consume identifier
                     }
                 }
+                break;
 		    }
 
 		    case WHILE: {

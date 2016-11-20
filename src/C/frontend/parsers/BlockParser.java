@@ -39,11 +39,11 @@ public class BlockParser extends CParserTD
     public ICodeNode parse(Token token, SymTabEntry routineId)
         throws Exception
     {
-        DeclarationsParser declarationsParser = new DeclarationsParser(this);
+        // DeclarationsParser declarationsParser = new DeclarationsParser(this);
         StatementParser statementParser = new StatementParser(this);
 
         // Parse any declarations.
-        declarationsParser.parse(token, routineId);
+        // declarationsParser.parse(token, routineId);
 
         token = synchronize(StatementParser.STMT_START_SET);
         TokenType tokenType = token.getType();
