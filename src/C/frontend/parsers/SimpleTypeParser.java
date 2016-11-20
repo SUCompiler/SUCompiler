@@ -79,7 +79,7 @@ class SimpleTypeParser extends TypeSpecificationParser
         }
 
         SymTabEntry id = symTabStack.lookup(name);
-        System.out.println(id != null);
+     
         if (id != null) {
             Definition definition = id.getDefinition();
 

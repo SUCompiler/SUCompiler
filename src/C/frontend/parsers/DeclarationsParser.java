@@ -80,6 +80,8 @@ public class DeclarationsParser extends CParserTD
                     variableDeclarationsParser.setDefinition(VARIABLE);
                     variableDeclarationsParser.parse(token, null, type, identifier);
             }
+            
+            token = currentToken();
 
             token = currentToken();
         }
