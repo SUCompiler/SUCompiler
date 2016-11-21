@@ -59,30 +59,35 @@ public class DeclarationsParser extends CParserTD
     public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
-        token = synchronize(IDENTIFIER_SET);
+        token = synchronize(FUNCTION_SET);
 
-        while (IDENTIFIER_SET.contains(token.getType())) {
+        while (FUNCTION_SET.contains(token.getType())) {
             type = token;
             token = nextToken();
             identifier = token;
             token = nextToken();
             TokenType tokenType = token.getType();
 
-            switch((CTokenType) tokenType) {
-                case LEFT_PAREN:
-                    // Parse the program.
-                     DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
-                     routineParser.parse(token, parentId, type, identifier);
-                    break;
-                default:
-                    VariableDeclarationsParser variableDeclarationsParser =
-                        new VariableDeclarationsParser(this);
-                    variableDeclarationsParser.setDefinition(VARIABLE);
-                    variableDeclarationsParser.parse(token, null, type, identifier);
+            // if void, this has tobe a procedure
+            if ((CTokenType) type.getType() == VOID) {
+                DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
+                routineParser.parse(token, parentId, type, identifier);
+            } else {
+                // if not void, this could be a function or a variable declaration
+                switch((CTokenType) tokenType) {
+                    case LEFT_PAREN:
+                        // Parse the program.
+                        DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);
+                        routineParser.parse(token, parentId, type, identifier);
+                        break;
+                    default:
+                        VariableDeclarationsParser variableDeclarationsParser =
+                            new VariableDeclarationsParser(this);
+                        variableDeclarationsParser.setDefinition(VARIABLE);
+                        variableDeclarationsParser.parse(token, null, type, identifier);
+                }
             }
             
-            token = currentToken();
-
             token = currentToken();
         }
 

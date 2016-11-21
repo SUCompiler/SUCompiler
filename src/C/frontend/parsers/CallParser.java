@@ -111,6 +111,7 @@ public class CallParser extends StatementParser
             // parameters, and check each actual parameter against the
             // corresponding formal parameter.
             if (isDeclared) {
+
                 if (++parmIndex < parmCount) {
                     SymTabEntry formalId = formalParms.get(parmIndex);
                     checkActualParameter(token, formalId, actualNode);
@@ -186,8 +187,7 @@ public class CallParser extends StatementParser
 
         token = nextToken();  // consume closing )
 
-        if ((parmsNode.getChildren().size() == 0) ||
-            (isDeclared && (parmIndex != parmCount-1)))
+        if (isDeclared && (parmIndex != parmCount-1))
         {
             errorHandler.flag(token, WRONG_NUMBER_OF_PARMS, this);
         }

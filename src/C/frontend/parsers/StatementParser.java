@@ -87,14 +87,7 @@ public class StatementParser extends CParserTD {
                         break;
                     }
 
-                    case FUNCTION: {
-                        AssignmentStatementParser assignmentParser =
-                            new AssignmentStatementParser(this);
-                        statementNode =
-                            assignmentParser.parseFunctionNameAssignment(token);
-                        break;
-                    }
-
+                    case FUNCTION:
                     case PROCEDURE: {
                         CallParser callParser = new CallParser(this);
                         statementNode = callParser.parse(token);
@@ -107,6 +100,15 @@ public class StatementParser extends CParserTD {
                     }
                 }
                 break;
+		    }
+
+		    case RETURN: {
+		    	// token = nextToken();
+		        AssignmentStatementParser assignmentParser =
+		            new AssignmentStatementParser(this);
+		        statementNode =
+		            assignmentParser.parseFunctionNameAssignment(token);
+		        break;
 		    }
 
 		    case WHILE: {
@@ -186,18 +188,6 @@ public class StatementParser extends CParserTD {
 			if (tokenType == SEMICOLON) {
 				token = nextToken(); // consume the ;
 			}
-
-			//~ // If at the start of the next assignment statement,
-			//~ // then missing a semicolon.
-			//~ else if (tokenType == IDENTIFIER) {
-				//~ errorHandler.flag(token, MISSING_SEMICOLON, this);
-			//~ }
-//~ 
-			//~ // Unexpected token.
-			//~ else if (tokenType != terminator) {
-				//~ errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-				//~ token = nextToken(); // consume the unexpected token
-			//~ }
 		}
 
 		// Look for the terminator token.

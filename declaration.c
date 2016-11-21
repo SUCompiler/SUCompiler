@@ -1,12 +1,32 @@
 int i, x;
-int one, two, three;
-float float1, float2, float3;
-bool bool1, bool2;
+bool boolOne, boolTwo;
 
-int main () : int {
+void addition(int param, float floatParam) {
 	i = 0;
 
 	while(i < 5) {
 		i = i + 1;
 	}
+}
+
+float division(int param1, int param2) {
+
+}
+
+bool isRunning() {
+	return boolTwo;
+}
+
+void multiply(bool boolParam) {
+	i = 0;
+
+	while(i < 5) {
+		i = i + 1;
+	}
+}
+
+int main() {
+	i = 0;
+	boolOne = isRunning();
+	return i;
 }

@@ -46,8 +46,30 @@ public class VariableParser extends StatementParser
         super(parent);
     }
 
-    // private static final EnumSet<CTokenType> SUBSCRIPT_FIELD_START_SET =
-    //     EnumSet.of(LEFT_BRACKET, DOT);
+    /**
+     * Parse a variable.
+     * @param token the initial token.
+     * @return the root node of the generated parse tree.
+     * @throws Exception if an error occurred.
+     */
+    public ICodeNode parse(String name, Token token)
+        throws Exception
+    {
+        // Look up the identifier in the symbol table stack.
+        name = name.toLowerCase();
+        SymTabEntry variableId = symTabStack.lookup(name);
+
+        // If not found, flag the error and enter the identifier
+        // as an undefined identifier with an undefined type.
+        if (variableId == null) {
+            errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+            variableId = symTabStack.enterLocal(name);
+            variableId.setDefinition(UNDEFINED);
+            variableId.setTypeSpec(Predefined.undefinedType);
+        }
+
+        return parse(token, variableId);
+    }
 
     /**
      * Parse a variable.
@@ -72,6 +94,19 @@ public class VariableParser extends StatementParser
         }
 
         return parse(token, variableId);
+    }
+
+    /**
+     * Parse a function name as the target of an assignment statement.
+     * @param token the initial token.
+     * @return the root node of the generated parse tree.
+     * @throws Exception if an error occurred.
+     */
+    public ICodeNode parseFunctionNameTarget(String name, Token token)
+        throws Exception
+    {
+        isFunctionTarget = true;
+        return parse(name, token);
     }
 
     /**

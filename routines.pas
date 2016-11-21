@@ -27,9 +27,10 @@ PROCEDURE proc(j, k : integer; VAR x, y, z : real; VAR v : arr;
 
 FUNCTION forwarded(m : integer; VAR t : real) : real; forward;
 
-FUNCTION func(VAR x : real; i : real; n : integer) : real;
+FUNCTION func() : real;
 
     VAR
+        x : real; i : real; n : integer
         z : real;
         p, q : boolean;
 
@@ -65,7 +66,7 @@ FUNCTION func(VAR x : real; i : real; n : integer) : real;
     BEGIN {func}
         p := true;
         q := false;
-        x := i*z - func(v, -3.15159, five) + n/m;
+        x := i*z - func() + n/m;
         func := x;
     END {func};
 

@@ -1,6 +1,7 @@
 package C.frontend.parsers;
 
 import java.util.EnumSet;
+import java.util.ArrayList;
 
 import C.frontend.*;
 import wci.frontend.*;
@@ -12,6 +13,7 @@ import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
+import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 
 /**
  * <h1>AssignmentStatementParser</h1>
@@ -56,22 +58,51 @@ public class AssignmentStatementParser extends StatementParser
 
         // Parse the target variable.
         VariableParser variableParser = new VariableParser(this);
-        ICodeNode targetNode = isFunctionTarget
-                             ? variableParser.parseFunctionNameTarget(token)
-                             : variableParser.parse(token);
+        ICodeNode targetNode = variableParser.parse(token);
+
+    
+        return parse(assignNode, targetNode);
+    }
+
+    /**
+     * Parse an assignment statement.
+     * @param token the initial token.
+     * @return the root node of the generated parse tree.
+     * @throws Exception if an error occurred.
+     */
+    public ICodeNode parse(String functionName, Token token)
+        throws Exception
+    {
+        // Create the ASSIGN node.
+        ICodeNode assignNode = ICodeFactory.createICodeNode(ASSIGN);
+        
+        // Parse the target variable.
+        VariableParser variableParser = new VariableParser(this);
+        ICodeNode targetNode = variableParser.parseFunctionNameTarget(functionName, token);
+        
+        return parse(assignNode, targetNode);
+    }
+
+    private ICodeNode parse(ICodeNode assignNode, ICodeNode targetNode) 
+        throws Exception
+    {
+        Token token = currentToken();
+
         TypeSpec targetType = targetNode != null ? targetNode.getTypeSpec()
                                                : Predefined.undefinedType;
 
         // The ASSIGN node adopts the variable node as its first child.
         assignNode.addChild(targetNode);
 
-        // Synchronize on the := token.
-        token = synchronize(ASSIGNMENT_SET);
-        if (token.getType() == ASSIGNMENT) {
-            token = nextToken();  // consume the :=
-        }
-        else {
-            errorHandler.flag(token, MISSING_ASSIGNMENT, this);
+        if (!isFunctionTarget) {
+            // Synchronize on the := token.
+            token = synchronize(ASSIGNMENT_SET);
+            if (token.getType() == ASSIGNMENT) {
+                token = nextToken();  // consume the :=
+            }
+            else {
+                errorHandler.flag(token, MISSING_ASSIGNMENT, this);
+            }
         }
 
         // Parse the expression.  The ASSIGN node adopts the expression's
@@ -96,7 +127,6 @@ public class AssignmentStatementParser extends StatementParser
         }
         token = nextToken();
 
-
         return assignNode;
     }
 
@@ -110,6 +140,9 @@ public class AssignmentStatementParser extends StatementParser
         throws Exception
     {
         isFunctionTarget = true;
-        return parse(token);
+        SymTabEntry routineId = symTabStack.getProgramId();
+        ArrayList<SymTabEntry> routineIds =
+            (ArrayList<SymTabEntry>) routineId.getAttribute(ROUTINE_ROUTINES);
+        return parse(routineIds.get(routineIds.size()-1).getName(), token);
     }
 }

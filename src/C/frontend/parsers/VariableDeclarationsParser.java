@@ -94,6 +94,30 @@ public class VariableDeclarationsParser extends DeclarationsParser
      * @return null
      * @throws Exception if an error occurred.
      */
+    public SymTabEntry parseParam(Token token, SymTabEntry parentId)
+        throws Exception
+    {
+        token = synchronize(IDENTIFIER_SET);
+        
+        // Parse the type specification.
+        TypeSpec type = parseTypeSpec(token);
+
+        token = nextToken();
+        // Parse the identifier sublist and its type specification.
+        token = synchronize(IDENTIFIER_ONLY);
+        SymTabEntry id = parseIdentifier(token);
+        id.setTypeSpec(type);
+
+        return id;
+    }
+
+    /**
+     * Parse variable declarations.
+     * @param token the initial token.
+     * @param parentId the symbol table entry of the parent routine's name.
+     * @return null
+     * @throws Exception if an error occurred.
+     */
     public SymTabEntry parse(Token token, SymTabEntry parentId)
         throws Exception
     {
@@ -133,6 +157,9 @@ public class VariableDeclarationsParser extends DeclarationsParser
 
         return null;
     }
+
+    static final EnumSet<CTokenType> IDENTIFIER_ONLY =
+        EnumSet.of(IDENTIFIER);
 
     // Synchronization set to start a sublist identifier.
     static final EnumSet<CTokenType> IDENTIFIER_START_SET =

@@ -58,19 +58,19 @@ public class CParserTD extends Parser
 			Predefined.initialize(symTabStack);
 
 			try {
-					Token token = nextToken();
+				Token token = nextToken();
 
-					// Parse a program.
-					ProgramParser programParser = new ProgramParser(this);
-					programParser.parse(token, null);
-					token = currentToken();
+				// Parse a program.
+				ProgramParser programParser = new ProgramParser(this);
+				programParser.parse(token, null);
+				token = currentToken();
 
-					// Send the parser summary message.
-					float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
-					sendMessage(new Message(PARSER_SUMMARY,
-																	new Number[] {token.getLineNumber(),
-																								getErrorCount(),
-																								elapsedTime}));
+				// Send the parser summary message.
+				float elapsedTime = (System.currentTimeMillis() - startTime)/1000f;
+				sendMessage(new Message(PARSER_SUMMARY,
+																new Number[] {token.getLineNumber(),
+																							getErrorCount(),
+																							elapsedTime}));
 			}
 			catch (java.io.IOException ex) {
 					errorHandler.abortTranslation(IO_ERROR, this);
