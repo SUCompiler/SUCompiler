@@ -14,7 +14,7 @@ float division(int param1, int param2) {
 }
 
 bool isRunning() {
-	return boolTwo;
+	return 0.1;
 }
 
 void multiply(bool boolParam) {
