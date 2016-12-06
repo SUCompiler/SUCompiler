@@ -73,22 +73,36 @@ public abstract class Scanner
     {
         return source.nextChar();
     }
-    
+
     /**
-     * Return the source character following the current character without
-     * consuming the current character.
-     * @return the following character.
+     * Call the source's atEol() method.
+     * @return true if at the end of the source line, else return false.
      * @throws Exception if an error occurred.
      */
-    public char peekChar()
+    public boolean atEol()
         throws Exception
     {
-    	return source.peekChar();
+        return source.atEol();
     }
-    
-    public char skipLine()
-    		 throws Exception
+
+    /**
+     * Call the source's atEof() method.
+     * @return true if at the end of the source file, else return false.
+     * @throws Exception if an error occurred.
+     */
+    public boolean atEof()
+        throws Exception
     {
-    	return source.skipLine();
+        return source.atEof();
+    }
+
+    /**
+     * Call the source's skipToNextLine() method.
+     * @throws Exception if an error occurred.
+     */
+    public void skipToNextLine()
+        throws Exception
+    {
+        source.skipToNextLine();
     }
 }
