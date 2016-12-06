@@ -95,6 +95,8 @@ public class Source implements MessageProducer
         }
     }
 
+    
+    
     /**
      * Consume the current source character and return the next character.
      * @return the next source character.

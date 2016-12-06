@@ -52,6 +52,7 @@ public class ProgramParser extends DeclarationsParser
         routineId.setAttribute(ROUTINE_ROUTINES, new ArrayList<SymTabEntry>());
         SymTab symTab = (SymTab) routineId.getAttribute(ROUTINE_SYMTAB);
         symTabStack.push(symTab);
+        symTabStack.getLocalSymTab().nextSlotNumber();  // bump slot number
 
         DeclarationsParser declarationsParser = new DeclarationsParser(this);
         declarationsParser.parse(token, routineId);

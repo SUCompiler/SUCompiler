@@ -96,6 +96,12 @@ public abstract class Scanner
         return source.atEof();
     }
 
+    public char peekChar()
+        throws Exception
+    {
+    	return source.peekChar();
+    }
+    
     /**
      * Call the source's skipToNextLine() method.
      * @throws Exception if an error occurred.

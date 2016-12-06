@@ -95,7 +95,7 @@ public class CScanner extends Scanner
         // // Handler
         if (currentChar == '/' && nextChar() == '/')
         {        	
-        	skipLine();
+        	skipToNextLine();
         }
     }
 }

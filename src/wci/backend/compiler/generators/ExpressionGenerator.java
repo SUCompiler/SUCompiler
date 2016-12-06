@@ -172,6 +172,7 @@ public class ExpressionGenerator extends StatementGenerator
     {
         // Get the two operand children of the operator node.
         ArrayList<ICodeNode> children = node.getChildren();
+        System.out.println(children);
         ICodeNode operandNode1 = children.get(0);
         ICodeNode operandNode2 = children.get(1);
         TypeSpec type1 = operandNode1.getTypeSpec();

@@ -39,6 +39,7 @@ public class StatementGenerator extends CodeGenerator
     public void generate(ICodeNode node)
         throws PascalCompilerException
     {
+    	System.out.println(node);
         ICodeNodeTypeImpl nodeType = (ICodeNodeTypeImpl) node.getType();
         int line = 0;
 
