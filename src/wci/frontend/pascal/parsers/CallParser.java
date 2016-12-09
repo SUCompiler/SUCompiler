@@ -185,9 +185,6 @@ public class CallParser extends StatementParser
         }
 
         token = nextToken();  // consume closing )
-        
-        System.out.println((parmsNode.getChildren().size() == 0) ||
-            (isDeclared && (parmIndex != parmCount-1)));
 
         if ((parmsNode.getChildren().size() == 0) ||
             (isDeclared && (parmIndex != parmCount-1)))

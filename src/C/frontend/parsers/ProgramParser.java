@@ -13,6 +13,8 @@ import static C.frontend.CErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
 import static wci.intermediate.symtabimpl.DefinitionImpl.*;
 import static wci.intermediate.symtabimpl.RoutineCodeImpl.*;
+import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
+import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
 /**
  * <h1>ProgramParser</h1>
  *
@@ -56,6 +58,16 @@ public class ProgramParser extends DeclarationsParser
         DeclarationsParser declarationsParser = new DeclarationsParser(this);
         declarationsParser.parse(token, routineId);
 
-        return null;
+
+        ICodeNode callNode = ICodeFactory.createICodeNode(CALL);
+        callNode.setAttribute(LINE, 100);
+        SymTabEntry pfId = symTabStack.lookup("main");
+        callNode.setAttribute(ID, pfId);
+        ICode dumb = ICodeFactory.createICode();
+        dumb.setRoot(callNode);
+        routineId.setAttribute(ROUTINE_ICODE, dumb);
+
+        symTabStack.pop();
+        return routineId;
     }
 }

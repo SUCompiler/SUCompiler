@@ -69,8 +69,6 @@ public class StatementParser extends PascalParserTD
                                                : UNDEFINED;
 
                 // Assignment statement or procedure call.
-                System.out.println(token.getText());
-                System.out.println((DefinitionImpl) idDefn);
                 switch ((DefinitionImpl) idDefn) {
 
                     case VARIABLE:

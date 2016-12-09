@@ -40,14 +40,18 @@ public class DeclaredRoutineParser extends DeclarationsParser
     public SymTabEntry parse(Token token, SymTabEntry parentId, Token type, Token identifier)
         throws Exception
     {
-
+        System.out.println("hello");
         Definition routineDefn = null;
         String dummyName = "DummyProgramName".toLowerCase();
         SymTabEntry routineId = null;
         TokenType routineType = token.getType();
 
         // Initialize.
-        if ((CTokenType) type.getType() == VOID)
+        if (identifier.getText() == "main")
+        {
+            routineDefn = DefinitionImpl.PROGRAM; 
+        }
+        else if ((CTokenType) type.getType() == VOID)
         {
         	routineDefn = DefinitionImpl.PROCEDURE;
         }
@@ -120,6 +124,8 @@ public class DeclaredRoutineParser extends DeclarationsParser
 
         BlockParser blockParser = new BlockParser(this);
         ICodeNode rootNode = blockParser.parse(token, routineId);
+        System.out.println("End this now");
+        System.out.println(rootNode);
         iCode.setRoot(rootNode);
 
         // Pop the routine's symbol table off the stack.
