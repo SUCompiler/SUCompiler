@@ -68,9 +68,6 @@ public class DeclarationsParser extends CParserTD
             token = nextToken();
             TokenType tokenType = token.getType();
 
-            System.out.println("tokenType");
-            System.out.println(tokenType);
-
             // if void, this has tobe a procedure
             if ((CTokenType) type.getType() == VOID) {
                 DeclaredRoutineParser routineParser = new DeclaredRoutineParser(this);

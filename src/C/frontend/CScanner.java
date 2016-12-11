@@ -54,7 +54,7 @@ public class CScanner extends Scanner
                                          Character.toString(currentChar));
             nextChar();  // consume character
         }
-
+        
         return token;
     }
 

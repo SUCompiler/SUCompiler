@@ -170,8 +170,8 @@ public class ProgramGenerator extends CodeGenerator
         throws PascalCompilerException
     {
         ICode iCode = (ICode) programId.getAttribute(ROUTINE_ICODE);
-        System.out.println(iCode);
-        System.out.println(programId);
+        // System.out.println(iCode);
+        // System.out.println(programId);
         ICodeNode root = iCode.getRoot();
 
         emitBlankLine();

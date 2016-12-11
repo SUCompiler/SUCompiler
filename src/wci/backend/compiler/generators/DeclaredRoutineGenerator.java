@@ -112,7 +112,6 @@ public class DeclaredRoutineGenerator extends CodeGenerator
 
             if ((defn == VARIABLE) || (defn == VALUE_PARM)
                                    || (defn == VAR_PARM)) {
-                System.out.println(id);
                 int slot = (Integer) id.getAttribute(SLOT);
                 emitDirective(VAR, slot + " is " + id.getName(),
                               typeDescriptor(id));

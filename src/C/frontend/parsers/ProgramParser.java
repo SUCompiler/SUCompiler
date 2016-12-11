@@ -60,14 +60,14 @@ public class ProgramParser extends DeclarationsParser
 
 
         ICodeNode callNode = ICodeFactory.createICodeNode(CALL);
-        callNode.setAttribute(LINE, 100);
         SymTabEntry pfId = symTabStack.lookup("main");
-        callNode.setAttribute(ID, pfId);
         ICode dumb = ICodeFactory.createICode();
+
+        callNode.setAttribute(LINE, currentToken().getLineNumber());
+        callNode.setAttribute(ID, pfId);
         dumb.setRoot(callNode);
         routineId.setAttribute(ROUTINE_ICODE, dumb);
 
-        symTabStack.pop();
         return routineId;
     }
 }

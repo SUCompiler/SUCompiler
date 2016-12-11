@@ -25,28 +25,50 @@
 
 
 .line 5
+	getstatic	hello/boolone Z
 	getstatic	hello/booltwo Z
+	iand
 	istore_1
 
 	iload_1
 	ireturn
 
 .limit locals 2
-.limit stack 1
+.limit stack 2
 .end method
 
-.method private static multiply(Z)V
+.method private static addition(II)I
 
-.var 0 is boolparam Z
+.var 0 is a I
+.var 1 is b I
+.var 2 is addition I
 
 
 .line 9
+	iload_0
+	iload_1
+	iadd
+	istore_2
+
+	iload_2
+	ireturn
+
+.limit locals 3
+.limit stack 2
+.end method
+
+.method private static loopto(I)V
+
+.var 0 is num I
+
+
+.line 13
 	iconst_0
 	putstatic	hello/i I
-.line 11
+.line 15
 L001:
 	getstatic	hello/i I
-	iconst_5
+	iload_0
 	if_icmplt	L003
 	iconst_0
 	goto	L004
@@ -56,13 +78,60 @@ L004:
 	iconst_1
 	ixor
 	ifne	L002
-.line 12
+.line 16
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"Index: %d\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	getstatic	hello/i I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
+.line 17
 	getstatic	hello/i I
 	iconst_1
 	iadd
 	putstatic	hello/i I
 	goto	L001
 L002:
+
+	return
+
+.limit locals 1
+.limit stack 7
+.end method
+
+.method private static multiply(Z)V
+
+.var 0 is boolparam Z
+
+
+.line 23
+	iconst_0
+	putstatic	hello/i I
+.line 25
+L005:
+	getstatic	hello/i I
+	iconst_5
+	if_icmplt	L007
+	iconst_0
+	goto	L008
+L007:
+	iconst_1
+L008:
+	iconst_1
+	ixor
+	ifne	L006
+.line 26
+	getstatic	hello/i I
+	iconst_1
+	iadd
+	putstatic	hello/i I
+	goto	L005
+L006:
 
 	return
 
@@ -75,13 +144,42 @@ L002:
 .var 1 is main I
 
 
-.line 17
+.line 31
 	iconst_0
 	putstatic	hello/i I
-.line 18
-	invokestatic	hello/isrunning()Z
-	putstatic	hello/boolone Z
-.line 19
+.line 32
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"The square root of %d\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	getstatic	hello/i I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
+.line 33
+	iconst_5
+	bipush	9
+	invokestatic	hello/addition(II)I
+	putstatic	hello/i I
+.line 34
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"The square root of %d\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	getstatic	hello/i I
+	invokestatic	java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+	aastore
+	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
+.line 35
+	getstatic	hello/i I
+	invokestatic	hello/loopto(I)V
+.line 36
 	getstatic	hello/i I
 	istore_1
 
@@ -89,7 +187,7 @@ L002:
 	ireturn
 
 .limit locals 2
-.limit stack 1
+.limit stack 7
 .end method
 
 .method public static main([Ljava/lang/String;)V
@@ -104,5 +202,5 @@ L002:
 	putstatic	hello/_standardIn LPascalTextIn;
 
 
-.line 100
+.line 37
 	invokestatic	hello/main()I
