@@ -1,8 +1,10 @@
+declaration
 int i, x;
 bool boolOne, boolTwo;
+float float1, float2;
 
 bool isRunning() {
-  return boolOne && boolTwo;
+  return boolOne;
 }
 
 int addition(int a, int b) {
@@ -28,6 +30,7 @@ void multiply(bool boolParam) {
 }
 
 int main() {
+  float1= 0.1;
 	i = 0;
   writeln("The square root of ", i);
   i = addition(5, 9);

@@ -10,10 +10,10 @@ rm -rf classes/*
 javac -classpath classes -d classes -sourcepath src src/*.java
 
 java -classpath classes "$@"
-name=$(basename "$4" ".pas")
+name=$(basename "${*: -1}" ".pas")
 name=$(basename "$name" ".c")
 java -jar jasmin.jar "$name.j"
 
 mv "$name.class" classes
 
-// java $name
+# java $name

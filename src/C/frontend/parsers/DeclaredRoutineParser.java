@@ -120,9 +120,9 @@ public class DeclaredRoutineParser extends DeclarationsParser
 
         // Parse the routine's block or forward declaration.
         routineId.setAttribute(ROUTINE_CODE, DECLARED);
-
+        
         BlockParser blockParser = new BlockParser(this);
-        ICodeNode rootNode = blockParser.parse(token, routineId);
+        ICodeNode rootNode = blockParser.parse(token, routineId, routineId.getDefinition() == DefinitionImpl.FUNCTION);
 
         iCode.setRoot(rootNode);
 

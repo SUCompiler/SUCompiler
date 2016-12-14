@@ -39,19 +39,24 @@ public class BlockParser extends CParserTD
     public ICodeNode parse(Token token, SymTabEntry routineId)
         throws Exception
     {
+        return parse(token, routineId, false);
+    }
+
+    public ICodeNode parse(Token token, SymTabEntry routineId, boolean requiredReturn)
+        throws Exception
+    {
         // DeclarationsParser declarationsParser = new DeclarationsParser(this);
         StatementParser statementParser = new StatementParser(this);
 
         // Parse any declarations.
         // declarationsParser.parse(token, routineId);
-
         token = synchronize(StatementParser.STMT_START_SET);
         TokenType tokenType = token.getType();
         ICodeNode rootNode = null;
 
         // Look for the BEGIN token to parse a compound statement.
         if (tokenType == LEFT_BRACE) {
-            rootNode = statementParser.parse(token);
+            rootNode = statementParser.parse(token, requiredReturn);
         }
 
         // Missing BEGIN: Attempt to parse anyway if possible.
@@ -60,10 +65,10 @@ public class BlockParser extends CParserTD
 
             if (StatementParser.STMT_START_SET.contains(tokenType)) {
                 rootNode = ICodeFactory.createICodeNode(COMPOUND);
-                statementParser.parseList(token, rootNode, RIGHT_BRACE, MISSING_LEFT_BRACE);
+                statementParser.parseList(token, rootNode, RIGHT_BRACE, MISSING_RIGHT_BRACE);
             }
         }
-
+        
         return rootNode;
     }
 }

@@ -6,6 +6,8 @@
 
 .field private static boolone Z
 .field private static booltwo Z
+.field private static float1 F
+.field private static float2 F
 .field private static i I
 .field private static x I
 
@@ -24,17 +26,13 @@
 .var 1 is isrunning Z
 
 
-.line 5
-	getstatic	hello/boolone Z
-	getstatic	hello/booltwo Z
-	iand
-	istore_1
+	nop
 
 	iload_1
 	ireturn
 
 .limit locals 2
-.limit stack 2
+.limit stack 1
 .end method
 
 .method private static addition(II)I
@@ -145,9 +143,12 @@ L006:
 
 
 .line 31
+	ldc	0.1
+	putstatic	hello/float1 F
+.line 32
 	iconst_0
 	putstatic	hello/i I
-.line 32
+.line 33
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
 	ldc	"The square root of %d\n"
 	iconst_1
@@ -159,12 +160,12 @@ L006:
 	aastore
 	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
 	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
-.line 33
+.line 34
 	iconst_5
 	bipush	9
 	invokestatic	hello/addition(II)I
 	putstatic	hello/i I
-.line 34
+.line 35
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
 	ldc	"The square root of %d\n"
 	iconst_1
@@ -176,10 +177,22 @@ L006:
 	aastore
 	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
 	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
-.line 35
+.line 36
 	getstatic	hello/i I
 	invokestatic	hello/loopto(I)V
-.line 36
+.line 37
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"%f\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	getstatic	hello/float1 F
+	invokestatic	java/lang/Float.valueOf(F)Ljava/lang/Float;
+	aastore
+	invokestatic	java/lang/String/format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+	invokevirtual	java/io/PrintStream.print(Ljava/lang/String;)V
+.line 38
 	getstatic	hello/i I
 	istore_1
 
@@ -202,5 +215,14 @@ L006:
 	putstatic	hello/_standardIn LPascalTextIn;
 
 
-.line 37
+.line 39
 	invokestatic	hello/main()I
+
+	getstatic	hello/_runTimer LRunTimer;
+	invokevirtual	RunTimer.printElapsedTime()V
+
+	return
+
+.limit locals 1
+.limit stack 3
+.end method

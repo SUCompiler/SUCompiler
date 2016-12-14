@@ -60,7 +60,6 @@ public class DeclarationsParser extends CParserTD
         throws Exception
     {
         token = synchronize(FUNCTION_SET);
-
         while (FUNCTION_SET.contains(token.getType())) {
             type = token;
             token = nextToken();
@@ -88,7 +87,7 @@ public class DeclarationsParser extends CParserTD
                 }
             }
             
-            token = currentToken();
+            token = currentToken();  
         }
 
         return null;

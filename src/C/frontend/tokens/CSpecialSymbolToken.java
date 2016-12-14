@@ -50,7 +50,7 @@ public class CSpecialSymbolToken extends CToken
         type = null;
         
         String[] oneCharSymbol = new String[] {
-        		"+", "-", ",", "\"", ";", "\'", "(", ")", 
+        		"+", "-", ",", "\"", ";", "\'", "(", ")", "%", 
         		"{", "}", "#", ".", "<", ">", "=", "/", "*"
         };
         String[] twoCharSymbol = new String[] {

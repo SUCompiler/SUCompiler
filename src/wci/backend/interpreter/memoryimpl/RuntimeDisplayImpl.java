@@ -60,6 +60,7 @@ public class RuntimeDisplayImpl
     public void returnUpdate(int nestingLevel)
     {
         int topIndex = size() - 1;
+        System.out.println(nestingLevel);
         ActivationRecord ar = get(nestingLevel);  // AR about to be popped off
         ActivationRecord prevAr = ar.linkedTo();  // previous AR it points to
 

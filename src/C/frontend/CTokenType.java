@@ -16,8 +16,8 @@ import wci.frontend.TokenType;
 public enum CTokenType implements TokenType
 {
     // Reserved words.
-    ELSE, IF, TRUE, FALSE, VOID, BOOL, RETURN, DIV,TYPE, 
-    FLOAT, INT, CONST, MOD, WHILE,
+    ELSE, IF, TRUE, FALSE, VOID, BOOL, RETURN, DIV, TYPE,
+    FLOAT, INT, CONST, WHILE,
 
     // Special symbols.
     PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), NOT("!"), COMMA(","),
@@ -25,8 +25,7 @@ public enum CTokenType implements TokenType
     EQUALS("=="), NOT_EQUALS("!="), LESS_THAN("<"), LESS_EQUALS("<="),
     GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
     LEFT_BRACE("{"), RIGHT_BRACE("}"), OR("||"), AND("&&"), COLON(":"),
-    COMMENTS_START("/*"), COMMENTS_END("*/"),
-    MODULO("%"), LINE_COMM("//"),
+    COMMENTS_START("/*"), MOD("%"),COMMENTS_END("*/"), LINE_COMM("//"),
     NUM_SIGN("#"),
 
     IDENTIFIER, INTEGER, REAL, STRING,
@@ -73,6 +72,7 @@ public enum CTokenType implements TokenType
         for (int i = FIRST_RESERVED_INDEX; i <= LAST_RESERVED_INDEX; ++i) {
             RESERVED_WORDS.add(values[i].getText().toLowerCase());
         }
+        // RESERVED_WORDS.add(STRING.getText().toLowerCase());
     }
 
     // Hash table of C special symbols.  Each special symbol's text

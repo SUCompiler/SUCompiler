@@ -20,6 +20,7 @@ public enum CErrorCode
     INVALID_PARM("Invalid parameter"),
     MISSING_ASSIGNMENT("Missing ="),
     MISSING_COMMA("Missing ,"),
+    MISSING_RETURN("Missing return statement"),
     MISSING_EQUALS("Missing =="),
     MISSING_IDENTIFIER("Missing identifier"),
     MISSING_RIGHT_PAREN("Missing )"),

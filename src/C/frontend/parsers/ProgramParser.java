@@ -46,7 +46,7 @@ public class ProgramParser extends DeclarationsParser
     {
         // Set up whole program symtab
         ICode iCode = ICodeFactory.createICode();
-        SymTabEntry routineId = symTabStack.enterLocal("hello".toLowerCase());       
+        SymTabEntry routineId = symTabStack.enterLocal(token.getText().toLowerCase());       
         routineId.setDefinition(DefinitionImpl.PROGRAM);      
         symTabStack.setProgramId(routineId);      
         routineId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());     
@@ -55,18 +55,17 @@ public class ProgramParser extends DeclarationsParser
         SymTab symTab = (SymTab) routineId.getAttribute(ROUTINE_SYMTAB);
         symTabStack.push(symTab);
 
+        token = nextToken();
         DeclarationsParser declarationsParser = new DeclarationsParser(this);
         declarationsParser.parse(token, routineId);
 
 
         ICodeNode callNode = ICodeFactory.createICodeNode(CALL);
         SymTabEntry pfId = symTabStack.lookup("main");
-        ICode dumb = ICodeFactory.createICode();
-
         callNode.setAttribute(LINE, currentToken().getLineNumber());
         callNode.setAttribute(ID, pfId);
-        dumb.setRoot(callNode);
-        routineId.setAttribute(ROUTINE_ICODE, dumb);
+        iCode.setRoot(callNode);
+        routineId.setAttribute(ROUTINE_ICODE, iCode);
 
         return routineId;
     }
