@@ -122,7 +122,6 @@ public class VariableDeclarationsParser extends DeclarationsParser
         throws Exception
     {
         token = synchronize(IDENTIFIER_SET);
-
         // Loop to parse a sequence of variable declarations
         // separated by semicolons.
         while (IDENTIFIER_SET.contains(token.getType())) {
@@ -190,7 +189,8 @@ public class VariableDeclarationsParser extends DeclarationsParser
         throws Exception
     {
         ArrayList<SymTabEntry> sublist = new ArrayList<SymTabEntry>();
-
+        token = nextToken();
+        // System.out.println(token.getText());
         do {
             token = synchronize(IDENTIFIER_START_SET);
             SymTabEntry id = parseIdentifier(token);
@@ -201,7 +201,8 @@ public class VariableDeclarationsParser extends DeclarationsParser
             
             token = synchronize(commaSet);
             TokenType tokenType = token.getType();
-
+            // System.out.println(tokenType == COMMA);
+            // System.out.println("hell");
             // Look for the comma.
             if (tokenType == COMMA) {
                 token = nextToken();  // consume the comma
@@ -287,6 +288,10 @@ public class VariableDeclarationsParser extends DeclarationsParser
                 id = symTabStack.enterLocal(name);
                 id.setDefinition(definition);
                 id.appendLineNumber(token.getLineNumber());
+
+                // Set its slot number in the local variables array.
+                int slot = id.getSymTab().nextSlotNumber();
+                id.setAttribute(SLOT, slot);
             }
             else {
                 errorHandler.flag(token, IDENTIFIER_REDEFINED, this);
@@ -315,6 +320,9 @@ public class VariableDeclarationsParser extends DeclarationsParser
                 id = symTabStack.enterLocal(name);
                 id.setDefinition(definition);
                 id.appendLineNumber(token.getLineNumber());
+
+                int slot = id.getSymTab().nextSlotNumber();
+                id.setAttribute(SLOT, slot);
             }
             else {
                 errorHandler.flag(token, IDENTIFIER_REDEFINED, this);

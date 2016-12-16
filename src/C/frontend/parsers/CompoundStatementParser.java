@@ -36,6 +36,12 @@ public class CompoundStatementParser extends StatementParser
     public ICodeNode parse(Token token)
         throws Exception
     {
+        return parse(token, false);
+    }
+
+    public ICodeNode parse(Token token, boolean requiredReturn)
+        throws Exception
+    {
         token = nextToken();  // consume the BEGIN
 
         // Create the COMPOUND node.
@@ -43,7 +49,7 @@ public class CompoundStatementParser extends StatementParser
 
         // Parse the statement list terminated by the END token.
         StatementParser statementParser = new StatementParser(this);
-        statementParser.parseList(token, compoundNode, RIGHT_BRACE, MISSING_RIGHT_BRACE);
+        statementParser.parseList(token, compoundNode, RIGHT_BRACE, MISSING_RIGHT_BRACE, requiredReturn);
 
         return compoundNode;
     }

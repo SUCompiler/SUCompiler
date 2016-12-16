@@ -41,9 +41,10 @@ public class CallStandardParser extends CallParser
         token = nextToken(); // consume procedure or function identifier
 
         switch ((RoutineCodeImpl) routineCode) {
+            case GETS:
             case READ:
             case READLN:  return parseReadReadln(token, callNode, pfId);
-
+            
             case WRITE:
             case WRITELN: return parseWriteWriteln(token, callNode, pfId);
 

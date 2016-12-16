@@ -44,6 +44,7 @@ public class CallStandardParser extends CallParser
             case READ:
             case READLN:  return parseReadReadln(token, callNode, pfId);
 
+            case PRINTF:
             case WRITE:
             case WRITELN: return parseWriteWriteln(token, callNode, pfId);
 

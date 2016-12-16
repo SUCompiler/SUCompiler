@@ -12,7 +12,7 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
 import static wci.intermediate.symtabimpl.DefinitionImpl.*;
 import static C.frontend.CTokenType.*;
 import static C.frontend.CErrorCode.*;
-
+import static wci.intermediate.symtabimpl.DefinitionImpl.VARIABLE;
 /**
  * <h1>StatementParser</h1>
  *
@@ -58,48 +58,52 @@ public class StatementParser extends CParserTD {
 	 *             if an error occurred.
 	 */
 	public ICodeNode parse(Token token) throws Exception {
+		return parse(token, false);
+	}
+
+	public ICodeNode parse(Token token, boolean requiredReturn) throws Exception {
 		ICodeNode statementNode = null;
 		
 		switch ((CTokenType) token.getType()) {
 		    case LEFT_BRACE: {
-				CompoundStatementParser compoundParser = new CompoundStatementParser(this);
-				statementNode = compoundParser.parse(token);
-				break;
+					CompoundStatementParser compoundParser = new CompoundStatementParser(this);
+					statementNode = compoundParser.parse(token, requiredReturn);
+					break;
 		    }
 		
 		    // An assignment statement begins with a variable's identifier.
 		    case IDENTIFIER: {
-				String name = token.getText().toLowerCase();
-                SymTabEntry id = symTabStack.lookup(name);
-                Definition idDefn = id != null ? id.getDefinition()
-                                               : UNDEFINED;
+					String name = token.getText().toLowerCase();
+          SymTabEntry id = symTabStack.lookup(name);
+          Definition idDefn = id != null ? id.getDefinition()
+                                         : UNDEFINED;
 
-                // Assignment statement or procedure call.
-                switch ((DefinitionImpl) idDefn) {
+          // Assignment statement or procedure call.
+          switch ((DefinitionImpl) idDefn) {
 
-                    case VARIABLE:
-                    case VALUE_PARM:
-                    case VAR_PARM:
-                    case UNDEFINED: {
-                        AssignmentStatementParser assignmentParser =
-                            new AssignmentStatementParser(this);
-                        statementNode = assignmentParser.parse(token);
-                        break;
-                    }
+              case VARIABLE:
+              case VALUE_PARM:
+              case VAR_PARM:
+              case UNDEFINED: {
+                  AssignmentStatementParser assignmentParser =
+                      new AssignmentStatementParser(this);
+                  statementNode = assignmentParser.parse(token);
+                  break;
+              }
 
-                    case FUNCTION:
-                    case PROCEDURE: {
-                        CallParser callParser = new CallParser(this);
-                        statementNode = callParser.parse(token);
-                        break;
-                    }
+              case FUNCTION:
+              case PROCEDURE: {
+                  CallParser callParser = new CallParser(this);
+                  statementNode = callParser.parse(token);
+                  break;
+              }
 
-                    default: {
-                        errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-                        token = nextToken();  // consume identifier
-                    }
-                }
-                break;
+              default: {
+                  errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+                  token = nextToken();  // consume identifier
+              }
+          }
+          break;
 		    }
 
 		    case RETURN: {
@@ -112,9 +116,9 @@ public class StatementParser extends CParserTD {
 		    }
 
 		    case WHILE: {
-				WhileStatementParser whileParser =
-				    new WhileStatementParser(this);
-				statementNode = whileParser.parse(token);
+					WhileStatementParser whileParser =
+					    new WhileStatementParser(this);
+					statementNode = whileParser.parse(token);
 				break;
 		    }
 
@@ -122,6 +126,16 @@ public class StatementParser extends CParserTD {
 				IfStatementParser ifParser = new IfStatementParser(this);
 				statementNode = ifParser.parse(token);
 				break;
+		    }
+
+		    case INT:
+		    case FLOAT:
+		    case BOOL: {
+		    	VariableDeclarationsParser variableDeclarationsParser =
+              new VariableDeclarationsParser(this);
+          variableDeclarationsParser.setDefinition(VARIABLE);
+          variableDeclarationsParser.parse(token, null);
+					break;
 		    }
 
 		    default: {
@@ -174,9 +188,18 @@ public class StatementParser extends CParserTD {
 			throws Exception {
 		// Loop to parse each statement until the } token
 		// or the end of the source file.
+		parseList(token, parentNode, terminator, errorCode, false);
+	}
 
+	protected void parseList(Token token, ICodeNode parentNode, CTokenType terminator, CErrorCode errorCode, boolean requiredReturn)
+			throws Exception {
+		// Loop to parse each statement until the } token
+		// or the end of the source file.
+		boolean seenReturn = false;
 		while (!(token instanceof EofToken) && (token.getType() != terminator)) {
-
+			if (token.getType() == RETURN) {
+				seenReturn = true;
+			}
 			// Parse a statement. The parent node adopts the statement node.
 			ICodeNode statementNode = parse(token);
 			parentNode.addChild(statementNode);
@@ -192,6 +215,9 @@ public class StatementParser extends CParserTD {
 
 		// Look for the terminator token.
 		if (token.getType() == terminator) {
+			if (requiredReturn && !seenReturn) {
+				errorHandler.flag(token, MISSING_RETURN, this);
+			}
 			token = nextToken(); // consume the terminator token
 		} else {
 			errorHandler.flag(token, errorCode, this);

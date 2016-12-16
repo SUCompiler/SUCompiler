@@ -54,7 +54,7 @@ public class CScanner extends Scanner
                                          Character.toString(currentChar));
             nextChar();  // consume character
         }
-
+        
         return token;
     }
 
@@ -91,11 +91,17 @@ public class CScanner extends Scanner
                 currentChar = nextChar();  // consume whitespace character
             }
         }
+        // System.out.println( currentChar + " " + peekChar() + " " + (currentChar == '/' && peekChar() == '/'));
         
-        // // Handler
-        if (currentChar == '/' && nextChar() == '/')
+        // Handler
+        while(currentChar == '/' && peekChar() == '/')
         {        	
-        	skipLine();
+        	skipToNextLine();
+            currentChar = currentChar();
+            while (Character.isWhitespace(currentChar)) {
+                currentChar = nextChar();
+            }
+            // System.out.println( currentChar);
         }
     }
 }

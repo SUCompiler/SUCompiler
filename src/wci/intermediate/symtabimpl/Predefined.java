@@ -36,8 +36,10 @@ public class Predefined
     public static SymTabEntry charId;
     public static SymTabEntry falseId;
     public static SymTabEntry trueId;
+    public static SymTabEntry getsId;
     public static SymTabEntry readId;
     public static SymTabEntry readlnId;
+    public static SymTabEntry printfId;
     public static SymTabEntry writeId;
     public static SymTabEntry writelnId;
     public static SymTabEntry absId;
@@ -138,8 +140,10 @@ public class Predefined
      */
     private static void initializeStandardRoutines(SymTabStack symTabStack)
     {
+        getsId    = enterStandard(symTabStack, PROCEDURE, "gets",    READ);
         readId    = enterStandard(symTabStack, PROCEDURE, "read",    READ);
         readlnId  = enterStandard(symTabStack, PROCEDURE, "readln",  READLN);
+        printfId  = enterStandard(symTabStack, PROCEDURE, "printf",   WRITE);
         writeId   = enterStandard(symTabStack, PROCEDURE, "write",   WRITE);
         writelnId = enterStandard(symTabStack, PROCEDURE, "writeln", WRITELN);
 

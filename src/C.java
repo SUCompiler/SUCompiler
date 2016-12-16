@@ -70,8 +70,6 @@ public class C
 
                 backend.process(iCode, symTabStack);
             }
-
-            backend.process(iCode, symTabStack);
         }
         catch (Exception ex) {
             System.out.println("***** Internal translator error. *****");
