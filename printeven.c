@@ -9,14 +9,21 @@ printeven
 
 int number, count;
 
+void doNothing() {
+
+}
+
+float division(float first, float seoncd) {
+  return first / seoncd;
+}
+
 int isEven(int number) {
   // If the number is even return 1 else return 0
-  // return (number + 1) % 2;
+  return (number + 1) % 2;
 }
 
 int main()
-{
-  number = -1;
+{  
   while (number != 0) {
     // Get a number from user
     printf("Enter new number (0 to quit): ");
@@ -33,7 +40,7 @@ int main()
         }
         count = count + 1;
       }
-      writeln;
+      printf("\n");
     }
   }
   return 0;
